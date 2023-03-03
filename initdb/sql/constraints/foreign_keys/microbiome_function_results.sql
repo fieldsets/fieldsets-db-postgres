@@ -1,0 +1,3 @@
+-- public.microbiome_function_results foreign keys
+ALTER TABLE public.microbiome_function_results ADD CONSTRAINT microbiome_function_results_analysis_id_fkey FOREIGN KEY (analysis_id) REFERENCES public.analysis(analysis_id);
+ALTER TABLE public.microbiome_function_results ADD CONSTRAINT microbiome_function_results_function_id_fkey FOREIGN KEY (function_id) REFERENCES public.microbe_function(function_id);

@@ -1,0 +1,2 @@
+-- public.microbe_gene foreign keys
+ALTER TABLE public.microbe_gene ADD CONSTRAINT microbe_gene_microbe_gene_catalog_id_fkey FOREIGN KEY (microbe_gene_catalog_id) REFERENCES public.microbe_gene_catalog(microbe_gene_catalog_id);

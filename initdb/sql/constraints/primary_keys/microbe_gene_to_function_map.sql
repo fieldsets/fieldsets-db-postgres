@@ -1,0 +1,1 @@
+ALTER TABLE public.microbe_gene_to_function_map ADD CONSTRAINT microbe_gene_to_function_map_pkey PRIMARY KEY (microbe_gene_to_function_map_id);

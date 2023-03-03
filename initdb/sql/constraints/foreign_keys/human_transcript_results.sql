@@ -1,0 +1,2 @@
+-- public.human_transcript_results foreign keys
+ALTER TABLE public.human_transcript_results ADD CONSTRAINT human_transcript_results_analysis_id_fkey FOREIGN KEY (analysis_id) REFERENCES public.analysis(analysis_id);

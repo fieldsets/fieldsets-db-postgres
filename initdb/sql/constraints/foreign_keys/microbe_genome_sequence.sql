@@ -1,0 +1,2 @@
+-- public.microbe_genome_sequence foreign keys
+ALTER TABLE public.microbe_genome_sequence ADD CONSTRAINT microbe_genome_sequence_genome_id_fkey FOREIGN KEY (genome_id) REFERENCES public.microbe_genome(genome_id);

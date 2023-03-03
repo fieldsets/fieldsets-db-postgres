@@ -1,0 +1,4 @@
+-- public.fieldsets_sample_decision foreign keys
+ALTER TABLE public.fieldsets_sample_decision ADD CONSTRAINT fieldsets_sample_decision_fieldsets_regime_version_id_fkey FOREIGN KEY (fieldsets_regime_version_id) REFERENCES fieldsets_regime_version(fieldsets_regime_version_id);
+ALTER TABLE public.fieldsets_sample_decision ADD CONSTRAINT fieldsets_sample_decision_execution_id_fkey FOREIGN KEY (execution_id) REFERENCES execution(execution_id);
+ALTER TABLE public.fieldsets_sample_decision ADD CONSTRAINT fieldsets_sample_decision_sample_id_fkey FOREIGN KEY (sample_id) REFERENCES sample(sample_id);

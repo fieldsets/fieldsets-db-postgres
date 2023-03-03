@@ -1,0 +1,2 @@
+-- public.fieldsets_regime_version foreign keys
+ALTER TABLE public.fieldsets_regime_version ADD CONSTRAINT fieldsets_regime_version_fieldsets_regime_id_fkey FOREIGN KEY (fieldsets_regime_id) REFERENCES fieldsets_regime(fieldsets_regime_id);

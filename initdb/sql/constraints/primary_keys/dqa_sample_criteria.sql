@@ -1,0 +1,1 @@
+ALTER TABLE public.fieldsets_sample_criteria ADD CONSTRAINT fieldsets_sample_criteria_pkey PRIMARY KEY (fieldsets_sample_criteria_id);

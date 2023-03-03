@@ -1,0 +1,3 @@
+-- public.genome_to_taxonomy_id foreign keys
+ALTER TABLE public.genome_to_taxonomy_id ADD CONSTRAINT genome_to_taxonomy_id_genome_id_fkey FOREIGN KEY (genome_id) REFERENCES public.microbe_genome(genome_id);
+ALTER TABLE public.genome_to_taxonomy_id ADD CONSTRAINT genome_to_taxonomy_id_genome_to_taxonomy_id_map_id_fkey FOREIGN KEY (genome_to_taxonomy_id_map_id) REFERENCES public.genome_to_taxonomy_id_map(genome_to_taxonomy_id_map_id);

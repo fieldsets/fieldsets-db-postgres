@@ -1,0 +1,4 @@
+-- public.fieldsets_batch_criteria_evaluation foreign keys
+ALTER TABLE public.fieldsets_batch_criteria_evaluation ADD CONSTRAINT fieldsets_batch_criteria_evaluation_batch_id_fkey FOREIGN KEY (batch_id) REFERENCES batch(batch_id);
+ALTER TABLE public.fieldsets_batch_criteria_evaluation ADD CONSTRAINT fieldsets_batch_criteria_evaluation_fieldsets_batch_criteria_id_fkey FOREIGN KEY (fieldsets_batch_criteria_id) REFERENCES fieldsets_batch_criteria(fieldsets_batch_criteria_id);
+ALTER TABLE public.fieldsets_batch_criteria_evaluation ADD CONSTRAINT fieldsets_batch_criteria_evaluation_execution_id_fkey FOREIGN KEY (execution_id) REFERENCES execution(execution_id);

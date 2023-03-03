@@ -1,0 +1,2 @@
+ALTER TABLE public.microbe_genome_sequence ADD CONSTRAINT microbe_genome_sequence_genome_id_sequence_name_key UNIQUE (genome_id, sequence_name);
+ALTER TABLE public.microbe_genome_sequence ADD CONSTRAINT microbe_genome_sequence_pkey PRIMARY KEY (microbe_genome_sequence_id);

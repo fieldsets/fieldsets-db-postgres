@@ -1,0 +1,1 @@
+ALTER TABLE public.fieldsets_batch_criteria ADD CONSTRAINT fieldsets_batch_criteria_pkey PRIMARY KEY (fieldsets_batch_criteria_id);

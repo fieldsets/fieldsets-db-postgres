@@ -1,0 +1,2 @@
+ALTER TABLE public.microbe_function_catalog ADD CONSTRAINT microbe_function_catalog_microbe_function_catalog_name_key UNIQUE (microbe_function_catalog_name);
+ALTER TABLE public.microbe_function_catalog ADD CONSTRAINT microbe_function_catalog_pkey PRIMARY KEY (microbe_function_catalog_id);

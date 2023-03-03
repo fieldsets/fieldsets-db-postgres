@@ -1,0 +1,2 @@
+-- public.human_gene foreign keys
+ALTER TABLE public.human_gene ADD CONSTRAINT human_gene_human_gene_catalog_id_fkey FOREIGN KEY (human_gene_catalog_id) REFERENCES public.human_gene_catalog(human_gene_catalog_id);

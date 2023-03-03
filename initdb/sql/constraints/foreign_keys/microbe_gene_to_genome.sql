@@ -1,0 +1,4 @@
+-- public.microbe_gene_to_genome foreign keys
+ALTER TABLE public.microbe_gene_to_genome ADD CONSTRAINT microbe_gene_to_genome_gene_id_fkey FOREIGN KEY (gene_id) REFERENCES public.microbe_gene(gene_id);
+ALTER TABLE public.microbe_gene_to_genome ADD CONSTRAINT microbe_gene_to_genome_genome_id_fkey FOREIGN KEY (genome_id) REFERENCES public.microbe_genome(genome_id);
+ALTER TABLE public.microbe_gene_to_genome ADD CONSTRAINT microbe_gene_to_genome_microbe_gene_to_genome_map_id_fkey FOREIGN KEY (microbe_gene_to_genome_map_id) REFERENCES public.microbe_gene_to_genome_map(microbe_gene_to_genome_map_id);

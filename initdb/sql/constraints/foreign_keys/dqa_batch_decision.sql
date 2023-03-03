@@ -1,0 +1,4 @@
+-- public.fieldsets_batch_decision foreign keys
+ALTER TABLE public.fieldsets_batch_decision ADD CONSTRAINT fieldsets_batch_decision_batch_id_fkey FOREIGN KEY (batch_id) REFERENCES batch(batch_id);
+ALTER TABLE public.fieldsets_batch_decision ADD CONSTRAINT fieldsets_batch_decision_fieldsets_regime_version_id_fkey FOREIGN KEY (fieldsets_regime_version_id) REFERENCES fieldsets_regime_version(fieldsets_regime_version_id);
+ALTER TABLE public.fieldsets_batch_decision ADD CONSTRAINT fieldsets_batch_decision_execution_id_fkey FOREIGN KEY (execution_id) REFERENCES execution(execution_id);

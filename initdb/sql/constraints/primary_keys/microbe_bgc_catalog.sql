@@ -1,0 +1,2 @@
+ALTER TABLE public.microbe_bgc_catalog ADD CONSTRAINT microbe_bgc_catalog_microbe_bgc_catalog_name_key UNIQUE (microbe_bgc_catalog_name);
+ALTER TABLE public.microbe_bgc_catalog ADD CONSTRAINT microbe_bgc_catalog_pkey PRIMARY KEY (microbe_bgc_catalog_id);

@@ -1,0 +1,2 @@
+ALTER TABLE public.analysis_pipeline_version ADD CONSTRAINT analysis_pipeline_version_analysis_pipeline_id_analysis_pip_key UNIQUE (analysis_pipeline_id, analysis_pipeline_version_name);
+ALTER TABLE public.analysis_pipeline_version ADD CONSTRAINT analysis_pipeline_version_pkey PRIMARY KEY (analysis_pipeline_version_id);
