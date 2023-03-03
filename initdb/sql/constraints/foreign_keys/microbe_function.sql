@@ -1,2 +1,0 @@
--- public.microbe_function foreign keys
-ALTER TABLE public.microbe_function ADD CONSTRAINT fk_microbe_function_catalog FOREIGN KEY (microbe_function_catalog_id) REFERENCES public.microbe_function_catalog(microbe_function_catalog_id);

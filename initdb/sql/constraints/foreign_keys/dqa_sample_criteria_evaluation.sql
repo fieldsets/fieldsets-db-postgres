@@ -1,4 +1,0 @@
--- public.fieldsets_sample_criteria_evaluation foreign keys
-ALTER TABLE public.fieldsets_sample_criteria_evaluation ADD CONSTRAINT fieldsets_sample_criteria_evaluation_fieldsets_sample_criteria_id_fkey FOREIGN KEY (fieldsets_sample_criteria_id) REFERENCES fieldsets_sample_criteria(fieldsets_sample_criteria_id);
-ALTER TABLE public.fieldsets_sample_criteria_evaluation ADD CONSTRAINT fieldsets_sample_criteria_evaluation_execution_id_fkey FOREIGN KEY (execution_id) REFERENCES execution(execution_id);
-ALTER TABLE public.fieldsets_sample_criteria_evaluation ADD CONSTRAINT fieldsets_sample_criteria_evaluation_sample_id_fkey FOREIGN KEY (sample_id) REFERENCES sample(sample_id);

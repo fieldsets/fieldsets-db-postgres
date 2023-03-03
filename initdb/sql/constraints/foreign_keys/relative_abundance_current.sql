@@ -1,2 +1,0 @@
--- public.relative_abundance_current foreign keys
-ALTER TABLE public.relative_abundance_current ADD CONSTRAINT relative_abundance_current_taxonomy_tree_id_fkey FOREIGN KEY (taxonomy_tree_id) REFERENCES public.taxonomy_tree(taxonomy_tree_id);

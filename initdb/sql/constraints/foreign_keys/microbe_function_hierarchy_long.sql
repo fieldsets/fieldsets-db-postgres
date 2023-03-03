@@ -1,4 +1,0 @@
--- public.microbe_function_hierarchy_long foreign keys
-ALTER TABLE public.microbe_function_hierarchy_long ADD CONSTRAINT microbe_function_hierarchy_lo_microbe_function_hierarchy_c_fkey FOREIGN KEY (microbe_function_hierarchy_catalog_id) REFERENCES public.microbe_function_hierarchy_catalog(microbe_function_hierarchy_catalog_id);
-ALTER TABLE public.microbe_function_hierarchy_long ADD CONSTRAINT microbe_function_hierarchy_long_function_id_fkey FOREIGN KEY (function_id) REFERENCES public.microbe_function(function_id);
-ALTER TABLE public.microbe_function_hierarchy_long ADD CONSTRAINT microbe_function_hierarchy_long_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.microbe_function(function_id);

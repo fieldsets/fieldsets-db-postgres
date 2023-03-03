@@ -1,1 +1,0 @@
-ALTER TABLE public.microbe_function_hierarchy_long ADD CONSTRAINT microbe_function_hierarchy_long_pkey PRIMARY KEY (microbe_function_hierarchy_catalog_id, function_id, parent_id);

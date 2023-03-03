@@ -1,2 +1,0 @@
-ALTER TABLE public.human_transcript ADD CONSTRAINT human_transcript_human_gene_catalog_id_human_transcript_nam_key UNIQUE (human_gene_catalog_id, source_transcript_id);
-ALTER TABLE public.human_transcript ADD CONSTRAINT human_transcript_pkey PRIMARY KEY (human_transcript_id);

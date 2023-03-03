@@ -1,1 +1,0 @@
-ALTER TABLE public.genome_to_taxonomy_id_map ADD CONSTRAINT genome_to_taxonomy_id_map_pkey PRIMARY KEY (genome_to_taxonomy_id_map_id);

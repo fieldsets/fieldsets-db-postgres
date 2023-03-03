@@ -1,1 +1,0 @@
-ALTER TABLE public.microbe_bgc_data_definition ADD CONSTRAINT microbe_bgc_data_definition_pkey PRIMARY KEY (microbe_bgc_data_id);

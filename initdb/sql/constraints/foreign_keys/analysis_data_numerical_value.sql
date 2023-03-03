@@ -1,4 +1,0 @@
--- public.analysis_data_numerical_value foreign keys
-ALTER TABLE public.analysis_data_numerical_value ADD CONSTRAINT analysis_data_numerical_value_analysis_data_id_fkey FOREIGN KEY (analysis_data_id) REFERENCES public.analysis_data_definition(analysis_data_id);
-ALTER TABLE public.analysis_data_numerical_value ADD CONSTRAINT analysis_data_numerical_value_analysis_id_fkey FOREIGN KEY (analysis_id) REFERENCES public.analysis(analysis_id);
-ALTER TABLE public.analysis_data_numerical_value ADD CONSTRAINT analysis_data_numerical_value_execution_id_fkey FOREIGN KEY (execution_id) REFERENCES public.execution(execution_id);

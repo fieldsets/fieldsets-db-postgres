@@ -1,2 +1,0 @@
-ALTER TABLE public.analysis_data_definition ADD CONSTRAINT analysis_data_definition_analysis_data_group_analysis_data__key UNIQUE (analysis_data_group, analysis_data_name);
-ALTER TABLE public.analysis_data_definition ADD CONSTRAINT analysis_data_definition_pkey PRIMARY KEY (analysis_data_id);

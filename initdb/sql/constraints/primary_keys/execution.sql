@@ -1,1 +1,0 @@
-ALTER TABLE public.execution ADD CONSTRAINT execution_pkey PRIMARY KEY (execution_id);

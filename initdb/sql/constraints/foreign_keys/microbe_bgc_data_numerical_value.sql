@@ -1,3 +1,0 @@
--- public.microbe_bgc_data_numerical_value foreign keys
-ALTER TABLE public.microbe_bgc_data_numerical_value ADD CONSTRAINT microbe_bgc_data_numerical_value_bgc_data_id_fkey FOREIGN KEY (bgc_data_id) REFERENCES public.microbe_bgc_data_definition(microbe_bgc_data_id);
-ALTER TABLE public.microbe_bgc_data_numerical_value ADD CONSTRAINT microbe_bgc_data_numerical_value_bgc_id_fkey FOREIGN KEY (bgc_id) REFERENCES public.microbe_bgc(bgc_id);

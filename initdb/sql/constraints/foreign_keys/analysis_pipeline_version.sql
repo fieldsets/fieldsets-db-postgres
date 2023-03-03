@@ -1,2 +1,0 @@
--- public.analysis_pipeline_version foreign keys
-ALTER TABLE public.analysis_pipeline_version ADD CONSTRAINT analysis_pipeline_version_analysis_pipeline_id_fkey FOREIGN KEY (analysis_pipeline_id) REFERENCES public.analysis_pipeline(analysis_pipeline_id);

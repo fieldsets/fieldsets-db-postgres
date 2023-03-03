@@ -1,2 +1,0 @@
--- public.analysis_data_definition foreign keys
-ALTER TABLE public.analysis_data_definition ADD CONSTRAINT analysis_data_definition_analysis_data_type_fkey FOREIGN KEY (analysis_data_type) REFERENCES public.value_type(value_type_id);

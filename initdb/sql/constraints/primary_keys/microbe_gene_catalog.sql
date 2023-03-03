@@ -1,2 +1,0 @@
-ALTER TABLE public.microbe_gene_catalog ADD CONSTRAINT microbe_gene_catalog_microbe_gene_catalog_name_key UNIQUE (microbe_gene_catalog_name);
-ALTER TABLE public.microbe_gene_catalog ADD CONSTRAINT microbe_gene_catalog_pkey PRIMARY KEY (microbe_gene_catalog_id);

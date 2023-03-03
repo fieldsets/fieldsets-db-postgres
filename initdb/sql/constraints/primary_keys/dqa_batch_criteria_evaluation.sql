@@ -1,2 +1,0 @@
-ALTER TABLE public.fieldsets_batch_criteria_evaluation ADD CONSTRAINT fieldsets_batch_criteria_evaluation_id UNIQUE (batch_id, fieldsets_batch_criteria_id, execution_id);
-ALTER TABLE public.fieldsets_batch_criteria_evaluation ADD CONSTRAINT fieldsets_batch_criteria_evaluation_pkey PRIMARY KEY (fieldsets_batch_criteria_evaluation_id);

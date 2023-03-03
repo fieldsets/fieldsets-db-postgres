@@ -1,2 +1,0 @@
--- public.sample_data_definition foreign keys
-ALTER TABLE public.sample_data_definition ADD CONSTRAINT sample_data_definition_sample_data_type_fkey FOREIGN KEY (sample_data_type) REFERENCES public.value_type(value_type_id);

@@ -1,2 +1,0 @@
-ALTER TABLE public.microbe_bgc_to_genome_map ADD CONSTRAINT microbe_bgc_to_genome_map_map_name_key UNIQUE (map_name);
-ALTER TABLE public.microbe_bgc_to_genome_map ADD CONSTRAINT microbe_bgc_to_genome_map_pkey PRIMARY KEY (microbe_bgc_to_genome_map_id);
