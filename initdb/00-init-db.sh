@@ -38,8 +38,6 @@ create_schemas() {
         CREATE TABLESPACE archive LOCATION '/var/lib/postgresql/archive';
         CREATE TABLESPACE pipeline LOCATION '/var/lib/postgresql/pipeline';
 
-        CREATE DATABASE dashboard;
-
 	EOSQL
 }
 

@@ -2,7 +2,7 @@
 
 This repository will create Fieldsets's PostgreSQL RDBMS data architecture within a docker container. This allows us to deploy Fieldsets's standard data structures to Amazon EC2 instances which on average cost 25% less than Amazon RDS instances.
 
-Currently this repository only recreates empty VBDB data structures found in the [SQL sub-directory](./initdb/sql/) of this repository. Integration of Fieldsets Phi is a work in progress.
+Currently this repository only recreates empty data structures found in the [SQL sub-directory](./initdb/sql/) of this repository. Integration of Fieldsets Phi is a work in progress.
 
 While this repository can serve as a boiler plate for any relevant projects, it is better to be used within a larger compose file to create compartmentalized projects. See how we combine this repository with [fieldsets-local](https://github.com/Fieldsets/fieldsets-local) to automate data migrations and creation of foreign data wrappers in our [Fieldsets Pipeline Repository](https://github.com/Fieldsets/fieldsets-pipeline)
 
