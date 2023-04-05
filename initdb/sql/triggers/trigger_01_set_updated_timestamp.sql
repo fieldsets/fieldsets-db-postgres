@@ -5,7 +5,7 @@
  * @param TEXT: table_name
  * @depends FUNCTION: trigger_set_updated_timestamp
  **/
-CREATE OR REPLACE PROCEDURE pipeline.trigger_01_set_updated_timestamp(db_schema TEXT, table_name TEXT) AS $procedure$
+CREATE OR REPLACE PROCEDURE public.trigger_01_set_updated_timestamp(db_schema TEXT, table_name TEXT) AS $procedure$
 	DECLARE
 		create_trigger_sql TEXT;
 		sanitized_table_name TEXT;
@@ -29,7 +29,7 @@ CREATE OR REPLACE PROCEDURE pipeline.trigger_01_set_updated_timestamp(db_schema 
 	END;
 $procedure$ LANGUAGE plpgsql;
 
-COMMENT ON PROCEDURE pipeline.trigger_01_set_updated_timestamp (TEXT, TEXT) IS 
+COMMENT ON PROCEDURE public.trigger_01_set_updated_timestamp (TEXT, TEXT) IS 
 '/**
  * trigger_01_set_updated_timestamp: triggered before update to set updated field to current time.
  *

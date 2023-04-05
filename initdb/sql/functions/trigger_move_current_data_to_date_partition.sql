@@ -1,8 +1,8 @@
 /**
- * trigger_move_current_data_to_date_partition: triggered before insert into default partition. When an insert happens on the default it is because the partition didn't exist at the time. Move it as it has been created.
+ * trigger_move_default_data_to_date_partition: triggered before insert into default partition. When an insert happens on the default it is because the partition didn't exist at the time. Move it as it has been created.
  * @depends TRIGGER: create_new_date_partition
  **/
-CREATE OR REPLACE FUNCTION pipeline.trigger_move_current_data_to_date_partition() RETURNS trigger AS $function$
+CREATE OR REPLACE FUNCTION public.trigger_move_default_data_to_date_partition() RETURNS trigger AS $function$
   DECLARE
     db_schema TEXT := TG_ARGV[0];
     parent_table_name TEXT := TG_ARGV[1];
@@ -28,8 +28,8 @@ CREATE OR REPLACE FUNCTION pipeline.trigger_move_current_data_to_date_partition(
   END;
 $function$ LANGUAGE plpgsql;
 
-COMMENT ON FUNCTION pipeline.trigger_move_current_data_to_date_partition () IS 
+COMMENT ON FUNCTION public.trigger_move_default_data_to_date_partition () IS 
 '/**
- * trigger_move_current_data_to_date_partition: triggered before insert into default partition. When an insert happens on the default it is because the partition didn''t exist at the time. Move it as it has been created.
+ * trigger_move_default_data_to_date_partition: triggered before insert into default partition. When an insert happens on the default it is because the partition didn''t exist at the time. Move it as it has been created.
  * @depends TRIGGER: create_new_date_partition
  **/';

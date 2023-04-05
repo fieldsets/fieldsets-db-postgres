@@ -6,7 +6,7 @@
  * @param TEXT: partition_tablespace
  * @depends FUNCTION: trigger_create_new_date_partition
  **/
-CREATE OR REPLACE PROCEDURE pipeline.trigger_05_create_new_date_partition(db_schema TEXT, table_name TEXT, partition_tablespace TEXT) AS $procedure$
+CREATE OR REPLACE PROCEDURE public.trigger_05_create_new_date_partition(db_schema TEXT, table_name TEXT, partition_tablespace TEXT) AS $procedure$
   DECLARE
     create_trigger_sql TEXT;
     sanitized_table_name TEXT;
@@ -16,7 +16,7 @@ CREATE OR REPLACE PROCEDURE pipeline.trigger_05_create_new_date_partition(db_sch
 		CREATE TRIGGER trigger_05_create_new_date_partition_%s
 		BEFORE INSERT ON %s.%s
 		FOR EACH ROW 
-		EXECUTE FUNCTION pipeline.trigger_create_new_date_partition(%L, %L, %L);
+		EXECUTE FUNCTION public.trigger_create_new_date_partition(%L, %L, %L);
 
 		COMMENT ON TRIGGER trigger_05_create_new_date_partition_%s ON %s.%s IS '
 		/**
@@ -30,7 +30,7 @@ CREATE OR REPLACE PROCEDURE pipeline.trigger_05_create_new_date_partition(db_sch
   END;
 $procedure$ LANGUAGE plpgsql;
 
-COMMENT ON PROCEDURE pipeline.trigger_05_create_new_date_partition (TEXT, TEXT, TEXT) IS 
+COMMENT ON PROCEDURE public.trigger_05_create_new_date_partition (TEXT, TEXT, TEXT) IS 
 '/**
  * trigger_05_create_new_date_partition: triggered before insert into given table. Create a new partition for the month of the current year if it does not exist using the `created` field.
  *

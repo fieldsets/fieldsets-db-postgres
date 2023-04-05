@@ -5,5 +5,5 @@ CREATE UNLOGGED TABLE IF NOT EXISTS pipeline.logs (
 ) PARTITION BY RANGE (created)
 TABLESPACE pipeline;
 
-CREATE UNLOGGED TABLE IF NOT EXISTS pipeline.__logs_current PARTITION OF pipeline.logs DEFAULT
+CREATE UNLOGGED TABLE IF NOT EXISTS pipeline.__logs_default PARTITION OF pipeline.logs DEFAULT
 TABLESPACE pipeline;

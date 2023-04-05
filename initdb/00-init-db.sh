@@ -28,16 +28,26 @@ traperr() {
 # create_schemas: Create DB schemas
 ##
 create_schemas() {
-    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB"  <<-EOSQL
+    mkdir -p /var/lib/postgresql/pipeline
+    mkdir -p /var/lib/postgresql/fieldsets
+    mkdir -p /var/lib/postgresql/documents
+    mkdir -p /var/lib/postgresql/files
+    mkdir -p /var/lib/postgresql/filters
+    mkdir -p /var/lib/postgresql/mappings
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
         CREATE SCHEMA IF NOT EXISTS fieldsets;
         CREATE SCHEMA IF NOT EXISTS pipeline;
-        CREATE SCHEMA IF NOT EXISTS archive;
 
         CREATE EXTENSION IF NOT EXISTS pg_cron;
 
-        CREATE TABLESPACE archive LOCATION '/var/lib/postgresql/archive';
-        CREATE TABLESPACE pipeline LOCATION '/var/lib/postgresql/pipeline';
+        CREATE TABLESPACE pipeline  LOCATION '/var/lib/postgresql/pipeline';
+        CREATE TABLESPACE fieldsets LOCATION '/var/lib/postgresql/fieldsets';
 
+        -- Create tablespaces for PG based stores. This allows you to mount separate volumes and disk types for a store type.
+        CREATE TABLESPACE documents LOCATION '/var/lib/postgresql/documents';
+        CREATE TABLESPACE files LOCATION '/var/lib/postgresql/files';
+        CREATE TABLESPACE filters LOCATION '/var/lib/postgresql/filters';
+        CREATE TABLESPACE mappings LOCATION '/var/lib/postgresql/mappings';
 	EOSQL
 }
 
@@ -95,6 +105,13 @@ create_roles() {
         EXECUTE 'GRANT ALL PRIVILEGES ON ALL ROUTINES IN SCHEMA public TO ${POSTGRES_WRITER_ROLE}';
         EXECUTE 'GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${POSTGRES_WRITER_ROLE}';
 
+        EXECUTE 'GRANT USAGE ON SCHEMA fieldsets TO ${POSTGRES_READER_ROLE}, ${POSTGRES_WRITER_ROLE}';
+        EXECUTE 'GRANT SELECT ON ALL TABLES IN SCHEMA fieldsets TO ${POSTGRES_READER_ROLE}';
+        EXECUTE 'GRANT SELECT ON ALL SEQUENCES IN SCHEMA fieldsets TO ${POSTGRES_READER_ROLE}';
+        EXECUTE 'GRANT EXECUTE ON ALL ROUTINES IN SCHEMA fieldsets TO ${POSTGRES_READER_ROLE}';
+        EXECUTE 'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA fieldsets TO ${POSTGRES_WRITER_ROLE}';
+        EXECUTE 'GRANT ALL PRIVILEGES ON ALL ROUTINES IN SCHEMA fieldsets TO ${POSTGRES_WRITER_ROLE}';
+
         EXECUTE 'GRANT USAGE ON SCHEMA cron TO ${POSTGRES_READER_ROLE}, ${POSTGRES_WRITER_ROLE}';
         EXECUTE 'GRANT SELECT ON ALL TABLES IN SCHEMA cron TO ${POSTGRES_READER_ROLE}';
         EXECUTE 'GRANT SELECT ON ALL SEQUENCES IN SCHEMA cron TO ${POSTGRES_READER_ROLE}';
@@ -109,6 +126,7 @@ create_roles() {
         EXECUTE 'GRANT EXECUTE ON ALL ROUTINES IN SCHEMA pipeline TO ${POSTGRES_READER_ROLE}';
         EXECUTE 'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA pipeline TO ${POSTGRES_WRITER_ROLE}';
         EXECUTE 'GRANT ALL PRIVILEGES ON ALL ROUTINES IN SCHEMA pipeline TO ${POSTGRES_WRITER_ROLE}';
+        
 
         EXECUTE 'ALTER ROLE ${POSTGRES_TRIGGER_ROLE} SET synchronous_commit=OFF';
 

@@ -2,7 +2,7 @@
  * trigger_create_new_date_partition: triggered before insert into data_values. Create a new data table if doesn't exist and notify parent table to attach as partition.
  * @depends TRIGGER: trigger_05_create_new_date_partition
  **/
-CREATE OR REPLACE FUNCTION pipeline.trigger_create_new_date_partition() RETURNS trigger AS $function$
+CREATE OR REPLACE FUNCTION public.trigger_create_new_date_partition() RETURNS trigger AS $function$
   DECLARE
     db_schema TEXT := TG_ARGV[0];
     parent_table_name TEXT := TG_ARGV[1];
@@ -31,7 +31,7 @@ CREATE OR REPLACE FUNCTION pipeline.trigger_create_new_date_partition() RETURNS 
       
       -- Asynchronously attach partition with scheduled cronjob.
       cron_job_token := format('attach_partition%s', partition_table_name);
-      cron_job_sql := format('CALL pipeline.attach_date_partition(%L,%L,%L,%L,%L);', db_schema, parent_table_name, partition_table_name, partition_year, partition_month);
+      cron_job_sql := format('CALL public.attach_date_partition(%L,%L,%L,%L,%L);', db_schema, parent_table_name, partition_table_name, partition_year, partition_month);
       EXECUTE format('SELECT cron.schedule(%L, %L, %L);', cron_job_token, '* * * * *', cron_job_sql);
     EXCEPTION WHEN duplicate_table THEN
       NULL;
@@ -41,7 +41,7 @@ CREATE OR REPLACE FUNCTION pipeline.trigger_create_new_date_partition() RETURNS 
   END;
 $function$ LANGUAGE plpgsql;
 
-COMMENT ON FUNCTION pipeline.trigger_create_new_date_partition () IS 
+COMMENT ON FUNCTION public.trigger_create_new_date_partition () IS 
 '/**
  * trigger_create_new_date_partition: triggered before insert into data_values. Create a new data table if doesn''t exist and notify parent table to attach as partition.
  * @depends TRIGGER: create_new_date_partition

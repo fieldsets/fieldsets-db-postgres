@@ -82,16 +82,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     chown postgres:postgres /var/lib/postgresql/archive && \
     chown postgres:postgres /var/lib/postgresql/pipeline && \
     mkdir /data && \
-    mkdir /fieldsets-lib && \
-    mkdir /fieldsets-bin && \
-    mkdir /fieldsets-sql && \
-    chown postgres:postgres /data && \
-    chown postgres:postgres /fieldsets-lib && \
-    chown postgres:postgres /fieldsets-bin && \
-    chown postgres:postgres /fieldsets-sql
-
-# Clickhouse ports
-EXPOSE 9000
-EXPOSE 9009
+    chown postgres:postgres /data
 
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
