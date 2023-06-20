@@ -11,6 +11,7 @@ services:
                 FDW_PATH: /usr/src
                 LOCAL_UID: ${LOCAL_UID:-1000}
                 POSTGRES_DB: ${POSTGRES_DB:-fieldsets}
+                BUILD_CONTEXT_PATH: ${POSTGRES_CONFIG_PATH:-./}
         container_name: fieldsets-postgres
         hostname: fieldsets-postgres
         ports:
