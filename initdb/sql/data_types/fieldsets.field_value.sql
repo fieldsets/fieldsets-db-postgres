@@ -14,6 +14,8 @@ BEGIN
                 %I 		BOOLEAN,
                 %I 		DATE,
                 %I		TIMESTAMP,
+                %I      TSVECTOR,
+                %I      UUID,
                 %I		JSONB,
                 %I      JSONB
             );',
@@ -22,11 +24,13 @@ BEGIN
             'number',
             'decimal',
             'object',
-            'list', 
-            'array', 
-            'bool', 
-            'date', 
-            'ts', 
+            'list',
+            'vector',
+            'bool',
+            'date',
+            'ts',
+            'search',
+            'uuid',
             'function',
             'custom'
         );
