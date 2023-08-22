@@ -2,10 +2,6 @@
 
 set -eEa -o pipefail
 
-psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB"  <<-EOSQL
-    -- INSERT INTO public.sample_table (id,name) VALUES
-    --   (1,'fieldsets'),
-EOSQL
-
-
-
+for f in /docker-entrypoint-initdb.d/sql/data/*.sql; do
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -f "$f"
+done

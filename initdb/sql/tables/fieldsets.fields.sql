@@ -2,19 +2,19 @@ CREATE TABLE IF NOT EXISTS fieldsets.fields (
     id         			BIGINT NOT NULL,
     token     			VARCHAR(255) NOT NULL,
     label      			TEXT NULL,
-    type				field_type NOT NULL,
-    store               store_type NOT NULL,
-    default_value 		field_value NULL,
+    type				FIELD_TYPE NOT NULL DEFAULT 'string'::FIELD_TYPE,
+    store               STORE_TYPE NOT NULL DEFAULT 'filter'::STORE_TYPE,
     parent     			BIGINT NULL DEFAULT 0,
+    default_value 		FIELD_VALUE NULL,
     meta  				JSONB NULL
 ) PARTITION BY LIST (store)
 TABLESPACE fieldsets;
 
 -- STORE TYPES
--- 'filter', 'record', 'mapping', 'document', 'message', 'sequence', 'file', 'program', 'custom'
+-- 'filter', 'record', 'mapping', 'document', 'message', 'sequence', 'file', 'enum', 'view', 'program', 'custom'
 
 -- FIELD TYPES
--- 'string', 'number', 'decimal', 'object', 'list', 'vector', 'bool', 'date', 'ts', 'function', 'fieldset', 'search', 'uuid', 'custom'
+-- 'fieldset', 'string', 'number', 'decimal', 'object', 'list', 'array', 'vector', 'bool', 'datetime', 'ts', 'search', 'uuid', 'function', 'custom'
 
 -- Filter Partitions
 CREATE TABLE IF NOT EXISTS fieldsets.__filter_fields PARTITION OF fieldsets.fields
@@ -44,6 +44,16 @@ CREATE TABLE IF NOT EXISTS fieldsets.__document_fields PARTITION OF fieldsets.fi
 -- Message Partitions
 CREATE TABLE IF NOT EXISTS fieldsets.__message_fields PARTITION OF fieldsets.fields
     FOR VALUES IN ('message')
+    TABLESPACE fieldsets;
+
+-- ENUM Partitions
+CREATE TABLE IF NOT EXISTS fieldsets.__enum_fields PARTITION OF fieldsets.fields
+    FOR VALUES IN ('enum')
+    TABLESPACE fieldsets;
+
+-- View Partitions
+CREATE TABLE IF NOT EXISTS fieldsets.__view_fields PARTITION OF fieldsets.fields
+    FOR VALUES IN ('view')
     TABLESPACE fieldsets;
 
 -- File Partitions

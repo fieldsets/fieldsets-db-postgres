@@ -3,7 +3,7 @@
  * @param TEXT: tablespace_name
  * @returns BOOLEAN
  **/
-CREATE OR REPLACE FUNCTION public.tablespace_exists(tablespace_name TEXT) RETURNS BOOLEAN 
+CREATE OR REPLACE FUNCTION public.tablespace_exists(tablespace_name TEXT) RETURNS BOOLEAN
 AS $function$
 DECLARE
     tablespace_exists BOOLEAN;
@@ -18,9 +18,9 @@ $function$
 STRICT
 LANGUAGE plpgsql IMMUTABLE;
 
-COMMENT ON FUNCTION public.isnumeric (TEXT) IS 
+COMMENT ON FUNCTION public.tablespace_exists (TEXT) IS
 '/**
- * isnumeric: Check if a text field is numeric.
- * @param TEXT: val
+ * tablespace_exists: Check if a tablespace exists.
+ * @param TEXT: tablespace_name
  * @returns BOOLEAN
  **/';

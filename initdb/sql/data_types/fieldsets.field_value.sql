@@ -1,9 +1,9 @@
 DO $$ DECLARE
     type_exists BOOLEAN;
 BEGIN
-	SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_type WHERE typname='field_value') INTO type_exists;
+	SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_type WHERE typname='FIELD_VALUE') INTO type_exists;
     IF NOT type_exists THEN
-        EXECUTE format('CREATE TYPE field_value AS (
+        EXECUTE format('CREATE TYPE FIELD_VALUE AS (
                 %I      BIGINT,
                 %I		TEXT,
                 %I		BIGINT,
@@ -11,6 +11,7 @@ BEGIN
                 %I		JSONB,
                 %I 		TEXT[],
                 %I		DECIMAL[],
+                %I		JSONB[],
                 %I 		BOOLEAN,
                 %I 		DATE,
                 %I		TIMESTAMP,
@@ -25,6 +26,7 @@ BEGIN
             'decimal',
             'object',
             'list',
+            'array',
             'vector',
             'bool',
             'date',

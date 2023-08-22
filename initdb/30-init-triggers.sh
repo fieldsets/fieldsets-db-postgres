@@ -10,5 +10,5 @@ psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" --dbname "${POSTGRES_DB}" 
     CALL public.trigger_01_set_updated_timestamp('pipeline', 'config');
     CALL public.trigger_05_create_new_date_partition('pipeline', 'logs', 'pipeline');
     CALL public.trigger_10_forward_default_partition_data('pipeline', 'logs');
+    CALL public.trigger_01_set_updated_timestamp('fieldsets', 'config');
 EOSQL
-

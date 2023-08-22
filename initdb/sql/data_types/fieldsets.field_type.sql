@@ -1,19 +1,20 @@
 DO $$ DECLARE
     type_exists BOOLEAN;
 BEGIN
-	SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_type WHERE typname='field_type') INTO type_exists;
+	SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_type WHERE typname='FIELD_TYPE') INTO type_exists;
     IF NOT type_exists THEN
         EXECUTE format(
-            'CREATE TYPE field_type AS ENUM (%L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L);',
+            'CREATE TYPE FIELD_TYPE AS ENUM (%L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L);',
             'fieldset',
             'string',
             'number',
             'decimal',
             'object',
             'list',
+            'array',
             'vector',
             'bool',
-            'date',
+            'datetime',
             'ts',
             'search',
             'uuid',

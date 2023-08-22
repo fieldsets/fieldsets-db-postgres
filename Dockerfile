@@ -12,7 +12,7 @@ ENV TZ=${TIMEZONE:-America/New_York}
 
 # If the certs directory exists, copy the certs and utilize them.
 ARG BUILD_CONTEXT_PATH
-COPY ${BUILD_CONTEXT_PATH}/cert[s]/* /tmp/certs/
+COPY ${BUILD_CONTEXT_PATH}cert[s]/* /tmp/certs/
 
 # Install packges
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
@@ -22,6 +22,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
         postgresql-server-dev-${POSTGRES_VERSION:-15} \
         postgresql-client-${POSTGRES_VERSION:-15} \
         postgresql-${POSTGRES_VERSION:-15}-cron \
+        postgresql-plpython3-${POSTGRES_VERSION:-15} \
         curl \
         libcurl4 \
         libcurl4-openssl-dev \
