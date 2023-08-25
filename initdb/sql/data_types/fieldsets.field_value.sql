@@ -18,6 +18,7 @@ BEGIN
                 %I      TSVECTOR,
                 %I      UUID,
                 %I		JSONB,
+                %I		JSONB,
                 %I      JSONB
             );',
             'fieldset',
@@ -34,7 +35,8 @@ BEGIN
             'search',
             'uuid',
             'function',
-            'custom'
+            'custom',
+            'any'
         );
     END IF;
 END $$;

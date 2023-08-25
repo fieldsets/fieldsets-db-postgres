@@ -35,7 +35,7 @@ AS $function$
             WHEN field ? 'parent' THEN
                 field ->> 'parent'
             ELSE
-                'field'
+                NULL
         END AS field_parent,
         CASE
             WHEN field ? 'value' THEN
@@ -58,7 +58,7 @@ AS $function$
                     WHEN value ? 'parent' THEN
                         value ->> 'parent'
                     ELSE
-                        'set'
+                        'fieldset'
                 END AS parent,
                 CASE
                     WHEN value ? 'store' THEN

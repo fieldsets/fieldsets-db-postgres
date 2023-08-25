@@ -12,9 +12,9 @@ CREATE OR REPLACE PROCEDURE fieldsets.import_json_schema(json_string TEXT) AS $p
         set_record RECORD;
         field_record RECORD;
         current_token TEXT;
-        meta_json_sql TEXT;
+        meta_json_sql TEXT := '{}';
     BEGIN
-        set_insert_sql := 'INSERT INTO fieldsets.sets (id, token, label, parent, default_store, meta) VALUES';
+        set_insert_sql := 'INSERT INTO fieldsets.sets (id, token, label, parent, parent_token, default_store, meta) VALUES';
         FOR set_record IN
             SELECT DISTINCT
                 set_token,
@@ -27,8 +27,7 @@ CREATE OR REPLACE PROCEDURE fieldsets.import_json_schema(json_string TEXT) AS $p
             IF set_record.set_token IS NULL THEN
                 current_token := format('%s_%s', set_record.set_parent, set_record.set_default_store);
             END IF;
-            meta_json_sql := format('{"parent_token": "%s"}', set_record.set_parent);
-            values_insert_sql := format('(%s, %L, %L, %s, %L, %L::JSONB),', nextval('fieldsets.set_id_seq'), current_token, set_record.set_label, 0, set_record.set_default_store, meta_json_sql);
+            values_insert_sql := format('(%s, %L, %L, %s, %L, %L, %L::JSONB),', nextval('fieldsets.set_id_seq'), current_token, set_record.set_label, 'NULL', set_record.set_parent, set_record.set_default_store, meta_json_sql);
             set_insert_sql := format('%s %s', set_insert_sql, values_insert_sql);
         END LOOP;
         set_insert_sql := TRIM(TRAILING ',' FROM set_insert_sql);
@@ -50,14 +49,11 @@ CREATE OR REPLACE PROCEDURE fieldsets.import_json_schema(json_string TEXT) AS $p
                 current_token := format('%s_%s', field_record.field_parent, field_record.field_store);
             END IF;
             field_value_col_sql := format('default_value.%s', field_record.field_type);
-            meta_json_sql := format('{"parent_token": "%s"}', field_record.field_parent);
-            values_insert_sql := format('(%s, %L, %L, %L, %L, %s, %L, %L::JSONB)', nextval('fieldsets.field_id_seq'), current_token, field_record.field_label, field_record.field_type, field_record.field_store, 0, field_record.field_default_value, meta_json_sql);
-            field_insert_sql := format('INSERT INTO fieldsets.fields (id, token, label, type, store, parent, %s, meta) VALUES %s', field_value_col_sql, values_insert_sql);
+            values_insert_sql := format('(%s, %L, %L, %L, %L, %s, %L, %L, %L::JSONB)', nextval('fieldsets.field_id_seq'), current_token, field_record.field_label, field_record.field_type, field_record.field_store, 'NULL', field_record.field_parent, field_record.field_default_value, meta_json_sql);
+            field_insert_sql := format('INSERT INTO fieldsets.fields (id, token, label, type, store, parent, parent_token, %s, meta) VALUES %s', field_value_col_sql, values_insert_sql);
             RAISE NOTICE 'EXECUTING SQL: %', field_insert_sql;
             EXECUTE field_insert_sql;
         END LOOP;
-
-
     END;
 $procedure$ LANGUAGE plpgsql;
 

@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS fieldsets.fields (
     label      			TEXT NULL,
     type				FIELD_TYPE NOT NULL DEFAULT 'string'::FIELD_TYPE,
     store               STORE_TYPE NOT NULL DEFAULT 'filter'::STORE_TYPE,
-    parent     			BIGINT NULL DEFAULT 0,
+    parent     			BIGINT NULL,
+    parent_token        VARCHAR(255) NULL,
     default_value 		FIELD_VALUE NULL,
     meta  				JSONB NULL
 ) PARTITION BY LIST (store)
@@ -41,7 +42,7 @@ CREATE TABLE IF NOT EXISTS fieldsets.__document_fields PARTITION OF fieldsets.fi
     FOR VALUES IN ('document')
     TABLESPACE fieldsets;
 
--- Message Partitions
+-- Message/Log Partitions
 CREATE TABLE IF NOT EXISTS fieldsets.__message_fields PARTITION OF fieldsets.fields
     FOR VALUES IN ('message')
     TABLESPACE fieldsets;
