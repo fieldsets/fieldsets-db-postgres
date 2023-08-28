@@ -5,6 +5,7 @@
  **/
 CREATE OR REPLACE PROCEDURE fieldsets.import_json_schema(json_string TEXT) AS $procedure$
     DECLARE
+        constraint_sql TEXT;
         set_insert_sql TEXT;
         field_insert_sql TEXT;
         values_insert_sql TEXT;
@@ -14,6 +15,11 @@ CREATE OR REPLACE PROCEDURE fieldsets.import_json_schema(json_string TEXT) AS $p
         current_token TEXT;
         meta_json_sql TEXT := '{}';
     BEGIN
+        constraint_sql := 'ALTER TABLE fieldsets.sets DROP CONSTRAINT IF EXISTS sets_parent_fkey CASCADE;';
+        EXECUTE constraint_sql;
+        constraint_sql := 'ALTER TABLE fieldsets.fields DROP CONSTRAINT IF EXISTS fields_parent_fkey CASCADE;';
+        EXECUTE constraint_sql;
+
         set_insert_sql := 'INSERT INTO fieldsets.sets (id, token, label, parent, parent_token, default_store, meta) VALUES';
         FOR set_record IN
             SELECT DISTINCT
@@ -54,6 +60,12 @@ CREATE OR REPLACE PROCEDURE fieldsets.import_json_schema(json_string TEXT) AS $p
             RAISE NOTICE 'EXECUTING SQL: %', field_insert_sql;
             EXECUTE field_insert_sql;
         END LOOP;
+
+        constraint_sql := 'ALTER TABLE fieldsets.sets ADD CONSTRAINT sets_parent_fkey FOREIGN KEY (parent) REFERENCES fieldsets.sets(id) INITIALLY DEFERRED;';
+        --EXECUTE constraint_sql;
+        constraint_sql := 'ALTER TABLE fieldsets.fields ADD CONSTRAINT fields_parent_fkey FOREIGN KEY (parent, store) REFERENCES fieldsets.fields(id, store) INITIALLY DEFERRED;';
+        --EXECUTE constraint_sql;
+
     END;
 $procedure$ LANGUAGE plpgsql;
 

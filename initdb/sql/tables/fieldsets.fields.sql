@@ -11,12 +11,6 @@ CREATE TABLE IF NOT EXISTS fieldsets.fields (
 ) PARTITION BY LIST (store)
 TABLESPACE fieldsets;
 
--- STORE TYPES
--- 'filter', 'record', 'mapping', 'document', 'message', 'sequence', 'file', 'enum', 'view', 'program', 'custom'
-
--- FIELD TYPES
--- 'fieldset', 'string', 'number', 'decimal', 'object', 'list', 'array', 'vector', 'bool', 'datetime', 'ts', 'search', 'uuid', 'function', 'custom'
-
 -- Filter Partitions
 CREATE TABLE IF NOT EXISTS fieldsets.__filter_fields PARTITION OF fieldsets.fields
     FOR VALUES IN ('filter')

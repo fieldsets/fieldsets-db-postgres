@@ -10,8 +10,13 @@ RETURNS TRIGGER AS $function$
     IF NEW.parent_token IS NULL THEN
       NEW.parent_token := NEW.store::TEXT;
     END IF;
-    SELECT f.parent INTO parent_id FROM fieldsets.fields f WHERE f.token = NEW.token;
-    IF parent_id > 0 THEN
+    IF NEW.type = 'fieldset'::FIELD_TYPE THEN
+      SELECT f.id INTO parent_id FROM fieldsets.fields f WHERE f.token = NEW.store;
+    ELSE
+      SELECT f.id INTO parent_id FROM fieldsets.fields f WHERE f.token = NEW.parent_token;
+    END IF;
+
+    IF parent_id >= 0 THEN
       NEW.parent := parent_id;
     END IF;
     RETURN NEW;
