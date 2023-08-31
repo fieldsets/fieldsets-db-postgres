@@ -1,8 +1,8 @@
 /**
- * trigger_create_field_enum_store: triggered before insert. Set parent id equal to meta data parent_token
- * @depends TRIGGER: trigger_01_create_field_enum_store
+ * trigger_create_enum_store: triggered before insert.
+ * @depends TRIGGER: trigger_01_create_enum_store
  **/
-CREATE OR REPLACE FUNCTION fieldsets.trigger_create_field_enum_store()
+CREATE OR REPLACE FUNCTION fieldsets.trigger_create_enum_store()
 RETURNS TRIGGER AS $function$
   DECLARE
     type_exists BOOLEAN;
@@ -36,8 +36,8 @@ RETURNS TRIGGER AS $function$
 END;
 $function$ LANGUAGE plpgsql;
 
-COMMENT ON FUNCTION fieldsets.trigger_create_field_enum_store () IS
+COMMENT ON FUNCTION fieldsets.trigger_create_enum_store () IS
 '/**
- * trigger_create_field_enum_store: triggered before insert. Set parent id equal to meta data parent_token
- * @depends TRIGGER: trigger_01_create_field_enum_store
+ * trigger_create_num_store: triggered before insert.
+ * @depends TRIGGER: trigger_01_create_enum_store
  **/';

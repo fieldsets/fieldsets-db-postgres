@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS fieldsets.fieldsets (
     set_id          BIGINT NOT NULL,
     field_id        BIGINT NOT NULL,
     value_id        BIGINT NOT NULL,
-    store           STORE_TYPE NULL DEFAULT 'filter'::STORE_TYPE,
+    store           STORE_TYPE NULL DEFAULT 'filter'::STORE_TYPE
 ) PARTITION BY LIST (store)
 TABLESPACE fieldsets;
 

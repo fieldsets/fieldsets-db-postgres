@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS fieldsets.sets (
     parent_token    VARCHAR(255) NULL DEFAULT 'fieldset',
     default_store   STORE_TYPE NULL DEFAULT 'filter'::STORE_TYPE,
     meta  		    JSONB NULL
-) PARTITION BY LIST (default_store)
+) PARTITION BY LIST (parent)
 TABLESPACE fieldsets;
 
 -- Partition by parent, id % 5 (modulus)

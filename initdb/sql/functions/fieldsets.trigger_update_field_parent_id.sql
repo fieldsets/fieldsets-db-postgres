@@ -9,11 +9,7 @@ DECLARE
   parent_id BIGINT;
 BEGIN
   IF NEW.parent IS NULL THEN
-    IF NEW.type = 'fieldset'::FIELD_TYPE THEN
-      SELECT f.id INTO parent_id FROM fieldsets.fields f WHERE f.token = NEW.store;
-    ELSE
-      SELECT f.id INTO parent_id FROM fieldsets.fields f WHERE f.token = NEW.parent_token;
-    END IF;
+    SELECT f.id INTO parent_id FROM fieldsets.fields f WHERE f.token = NEW.parent_token;
     IF parent_id >= 0 THEN
       update_sql := format('UPDATE fieldsets.fields SET parent = %s WHERE id = %s;', parent_id, NEW.id);
       NEW.parent := parent_id;

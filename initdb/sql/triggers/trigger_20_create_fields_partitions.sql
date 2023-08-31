@@ -5,8 +5,8 @@
 DROP TRIGGER IF EXISTS trigger_20_create_fields_partitions ON fieldsets.fields;
 CREATE TRIGGER trigger_20_create_fields_partitions
 AFTER INSERT ON fieldsets.fields
-FOR EACH ROW 
-EXECUTE FUNCTION trigger_create_fields_partitions();
+FOR EACH ROW
+EXECUTE FUNCTION fieldsets.trigger_create_fields_partitions();
 
 
 COMMENT ON TRIGGER trigger_20_create_fields_partitions ON fieldsets.fields IS '
