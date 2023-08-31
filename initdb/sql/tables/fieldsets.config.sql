@@ -4,4 +4,4 @@ CREATE TABLE fieldsets.config (
     config_data JSONB,
     created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+) TABLESPACE fieldsets;

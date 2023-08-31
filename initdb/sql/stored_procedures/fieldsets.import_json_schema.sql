@@ -55,15 +55,15 @@ CREATE OR REPLACE PROCEDURE fieldsets.import_json_schema(json_string TEXT) AS $p
                 current_token := format('%s_%s', field_record.field_parent, field_record.field_store);
             END IF;
             field_value_col_sql := format('default_value.%s', field_record.field_type);
-            values_insert_sql := format('(%s, %L, %L, %L, %L, %s, %L, %L, %L::JSONB)', nextval('fieldsets.field_id_seq'), current_token, field_record.field_label, field_record.field_type, field_record.field_store, 'NULL', field_record.field_parent, field_record.field_default_value, meta_json_sql);
-            field_insert_sql := format('INSERT INTO fieldsets.fields (id, token, label, type, store, parent, parent_token, %s, meta) VALUES %s', field_value_col_sql, values_insert_sql);
+            values_insert_sql := format('(%s, %L, %L, %L, %s, %L, %L, %L::JSONB)', nextval('fieldsets.field_id_seq'), current_token, field_record.field_label, field_record.field_type, field_record.field_store, 'NULL', field_record.field_parent, field_record.field_default_value, meta_json_sql);
+            field_insert_sql := format('INSERT INTO fieldsets.fields (id, token, label, type, parent, parent_token, %s, meta) VALUES %s', field_value_col_sql, values_insert_sql);
             RAISE NOTICE 'EXECUTING SQL: %', field_insert_sql;
             EXECUTE field_insert_sql;
         END LOOP;
 
         constraint_sql := 'ALTER TABLE fieldsets.sets ADD CONSTRAINT sets_parent_fkey FOREIGN KEY (parent) REFERENCES fieldsets.sets(id) INITIALLY DEFERRED;';
         --EXECUTE constraint_sql;
-        constraint_sql := 'ALTER TABLE fieldsets.fields ADD CONSTRAINT fields_parent_fkey FOREIGN KEY (parent, store) REFERENCES fieldsets.fields(id, store) INITIALLY DEFERRED;';
+        constraint_sql := 'ALTER TABLE fieldsets.fields ADD CONSTRAINT fields_parent_fkey FOREIGN KEY (parent) REFERENCES fieldsets.fields(id) INITIALLY DEFERRED;';
         --EXECUTE constraint_sql;
 
     END;
