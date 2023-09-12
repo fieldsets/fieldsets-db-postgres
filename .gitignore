@@ -8,6 +8,11 @@
 ./plugins/*
 ./plugins
 
+*.crt
+*.pem
+*_rsa
+id_rsa
+
 ./certs/*
 !./certs
 !./certs/README.md
