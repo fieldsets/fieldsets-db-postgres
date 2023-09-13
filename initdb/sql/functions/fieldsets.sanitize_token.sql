@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION fieldsets.sanitize_token(token_string TEXT)
 RETURNS TEXT
 AS $function$
     BEGIN
-        RETURN regexp_replace(lower(token_string),'![a-z0-9_]','_','g') INTO return_result;
+        RETURN regexp_replace(lower(token_string),'![a-z0-9_]','_','g');
     END;
 $function$ LANGUAGE plpgsql;
 
