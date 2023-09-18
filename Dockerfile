@@ -26,6 +26,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
         postgresql-plpython3-${POSTGRES_VERSION:-15} \
         curl \
         openssl \
+        coreutils \
         libcurl4 \
         libcurl4-openssl-dev \
         uuid-dev \
