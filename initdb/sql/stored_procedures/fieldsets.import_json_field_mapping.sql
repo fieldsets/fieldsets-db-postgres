@@ -15,8 +15,8 @@ CREATE OR REPLACE PROCEDURE fieldsets.import_json_field_mapping(json_file_path T
     END;
 $procedure$ LANGUAGE plpgsql;
 
-COMMENT ON PROCEDURE fieldsets.import_json_schema(TEXT) IS
+COMMENT ON PROCEDURE fieldsets.import_json_field_mapping(TEXT) IS
 '/**
- * import_json_schema: take a fieldset json schema and insert it into fieldset tables.
- * @param TEXT: json_string
+ * import_json_field_mapping: take a table and map it to an associated fieldset field.
+ * @param TEXT: json_file_path
  **/';
