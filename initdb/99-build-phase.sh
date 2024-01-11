@@ -18,6 +18,7 @@ set -eEa -o pipefail
 export PGPASSWORD=${POSTGRES_PASSWORD}
 PRIORITY=99
 last_checkpoint="/docker-entrypoint-init.d/99-build-plugins.sh"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 #===
 # Functions
@@ -26,10 +27,10 @@ last_checkpoint="/docker-entrypoint-init.d/99-build-plugins.sh"
 source /fieldsets-lib/shell/utils.sh
 
 ##
-# build: Run any plugin build scripts
+# build: Build Phase occurs right after docker containers are built and before any containers start for the first time. These scripts are local and not executed within the containers.
 ##
 build() {
-    log "Building Plugins...."
+    log "Begin Build Phase...."
     local f
     for f in /fieldsets-plugins/*/; do
         if [ -f "${f}build.sh" ]; then
@@ -38,7 +39,7 @@ build() {
         fi
     done
 
-    log "Plugins Initialized."
+    log "Build Phase Complete."
 }
 
 #===

@@ -1,5 +1,5 @@
 ARG POSTGRES_VERSION
-FROM postgres:${POSTGRES_VERSION:-15}
+FROM postgres:${POSTGRES_VERSION:-15}-bullseye
 
 ENV DEBIAN_FRONTEND='noninteractive'
 ARG POSTGRES_VERSION
@@ -12,6 +12,7 @@ ENV TZ=${TIMEZONE:-America/New_York}
 
 # If the certs directory exists, copy the certs and utilize them.
 ARG BUILD_CONTEXT_PATH
+COPY ${BUILD_CONTEXT_PATH}bin/root-certs.sh /root/.local/bin/root-certs.sh
 COPY ${BUILD_CONTEXT_PATH}cert[s]/* /tmp/certs/
 
 # Install packges
@@ -24,6 +25,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
         postgresql-${POSTGRES_VERSION:-15}-cron \
         postgresql-plpython3-${POSTGRES_VERSION:-15} \
         curl \
+        openssl \
+        coreutils \
         libcurl4 \
         libcurl4-openssl-dev \
         uuid-dev \
@@ -64,9 +67,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
         libevent-pthreads-* \
         libssl-dev \
         libzstd-dev && \
-    cp /tmp/certs/* /usr/local/share/ca-certificates/ && \
-    cp /tmp/certs/* /etc/ssl/certs/ && \
-    update-ca-certificates --fresh && \
+    bash /root/.local/bin/root-certs.sh /tmp/certs/ && \
     curl https://packages.fluentbit.io/fluentbit.key | gpg --dearmor | tee /usr/share/keyrings/fluentbit-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/fluentbit-keyring.gpg] https://packages.fluentbit.io/debian/$(lsb_release -cs) $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/fluent-bit.list && \
     apt-get update && \

@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-    fieldsets-postgres:
+    fieldsets-db:
         image: ${CONTAINER_REGISTRY:-fieldsets}/docker-postgres:${VERSION:-latest}
         build:
             context: ./
@@ -12,8 +12,8 @@ services:
                 LOCAL_UID: ${LOCAL_UID:-1000}
                 POSTGRES_DB: ${POSTGRES_DB:-fieldsets}
                 BUILD_CONTEXT_PATH: ${POSTGRES_CONFIG_PATH:-./}
-        container_name: fieldsets-postgres
-        hostname: fieldsets-postgres
+        container_name: fieldsets-db
+        hostname: fieldsets-db
         ports:
             - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}
         environment:
@@ -23,7 +23,6 @@ services:
             LOGGER_PORT: ${LOGGER_PORT:-24224}
             FDW_PATH: /usr/src
             SSH_HOST: ${SSH_HOST:-}
-            FIELDSETS_LOCAL_HOST: ${FIELDSETS_LOCAL_HOST:-172.28.0.6}
             POSTGRES_VERSION: ${POSTGRES_VERSION:-15}
             POSTGRES_USER: ${POSTGRES_USER:-postgres}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fieldsets}
@@ -58,36 +57,17 @@ services:
             - postgres-data:/var/lib/postgresql/data
             - postgres-logs:/var/lib/postgresql/logs
             - postgres-archive:/var/lib/postgresql/archive
-            - postgres-pipeline:/var/lib/postgresql/pipeline
-        networks:
-            default:
-                ipv4_address: ${POSTGRES_HOST:-172.28.0.7}
-        logging:
-            driver: fluentd
-            options:
-                fluentd-address: ${LOGGER_HOST:-172.28.0.2}:${LOGGER_PORT:-24224}
-                tag: debug_log.postgres
-                fluentd-async: "true"
-                env: "PGOPTIONS='-c search_path=pipeline',LOGGING_ENABLED='${LOGGING_ENABLED:-false}'"
+            - postgres-pipeline:/var/lib/postgresql/pipeline        
 volumes:
     postgres-data:
         driver: local
-        name: fieldsets-postgres-data
+        name: fieldsets-db-data
     postgres-logs:
         driver: local
-        name: fieldsets-postgres-logs
+        name: fieldsets-db-logs
     postgres-archive:
         driver: local
-        name: fieldsets-postgres-archive
+        name: fieldsets-db-archive
     postgres-pipeline:
         driver: local
-        name: fieldsets-postgres-pipeline
-
-networks:
-    default:
-        driver: bridge
-        name: fieldsets_network
-        attachable: true
-        ipam:
-            config:
-            - subnet: ${FIELDSETS_NETWORK_SUBNET:-172.28.0.0/24}
+        name: fieldsets-db-pipeline
