@@ -15,9 +15,5 @@ INSERT INTO fieldsets.fields (id, token, label, type, default_value, parent, par
     (13, 'uuid', 'UUID Field', 'uuid', NULL, 0, 'field', '{}'::JSONB),
     (14, 'function', 'Function Field', 'function', NULL, 0, 'field', '{}'::JSONB),
     (15, 'custom', 'Custom Field', 'any', NULL, 0, 'field', '{}'::JSONB),
-    (16, 'any', 'Any Field', 'any', NULL, 0, 'field', '{}'::JSONB),
-    (40, 'currency', 'Currency Field', 'decimal', NULL, 4, 'decimal', '{}'::JSONB),
-    (140, 'pg_function', 'Postgres Function Field', 'function', NULL, 14, 'function', '{}'::JSONB),
-    (141, 'py_function', 'Python Function Field', 'function', NULL, 14, 'function', '{}'::JSONB),
-    (142, 'sh_function', 'Shell Function Field', 'function', NULL, 14, 'function', '{}'::JSONB)
+    (16, 'any', 'Any Field', 'any', NULL, 0, 'field', '{}'::JSONB)
 ON CONFLICT DO NOTHING;
