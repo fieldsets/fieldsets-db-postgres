@@ -50,14 +50,14 @@ services:
             - ${POSTGRES_CONFIG_PATH:-./}postgresql.conf:/etc/postgresql/postgresql.conf
             - ${POSTGRES_CONFIG_PATH:-./}cron.conf:/etc/postgresql/conf.d/cron.conf
             - ${POSTGRES_CONFIG_PATH:-./}initdb/:/docker-entrypoint-initdb.d/
-            - ${FIELDSETS_LIB_PATH:-./lib/}:/fieldsets-lib/
-            - ${FIELDSETS_PLUGINS_PATH:-./plugins/}:/fieldsets-plugins/
-            - ${FIELDSETS_DATA_PATH:-./data/}:/fieldsets-data/
-            - ${FIELDSETS_SRC_PATH:-./src/}:/fieldsets/
+            - ${FIELDSETS_PATH:-./}lib/:/fieldsets-lib/
+            - ${FIELDSETS_PATH:-./}plugins/:/fieldsets-plugins/
+            - ${FIELDSETS_PATH:-./}data/:/fieldsets-data/
+            - ${FIELDSETS_PATH:-./}src/:/fieldsets/
             - postgres-data:/var/lib/postgresql/data
             - postgres-logs:/var/lib/postgresql/logs
             - postgres-archive:/var/lib/postgresql/archive
-            - postgres-pipeline:/var/lib/postgresql/pipeline        
+            - postgres-pipeline:/var/lib/postgresql/pipeline
 volumes:
     postgres-data:
         driver: local
