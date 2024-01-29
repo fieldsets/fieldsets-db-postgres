@@ -39,6 +39,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
         lsb-release \
         wget \
         build-essential \
+        dnsutils \
+        openssh-client \
+        net-tools \
         cmake \
         pkg-config \
         git \
@@ -70,8 +73,12 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     bash /root/.local/bin/root-certs.sh /tmp/certs/ && \
     curl https://packages.fluentbit.io/fluentbit.key | gpg --dearmor | tee /usr/share/keyrings/fluentbit-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/fluentbit-keyring.gpg] https://packages.fluentbit.io/debian/$(lsb_release -cs) $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/fluent-bit.list && \
-    apt-get update && \
+    wget -q https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -P /tmp/ && \
+    dpkg -i /tmp/packages-microsoft-prod.deb && \
+    rm /tmp/packages-microsoft-prod.deb && \
+    apt-get -y update && \
     apt-get install -y --no-install-recommends \
+        powershell \
         fluent-bit && \
     apt-get clean && \
     ln -s /opt/fluent-bit/bin/fluent-bit /usr/local/bin/fluent-bit && \
