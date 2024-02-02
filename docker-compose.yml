@@ -22,7 +22,6 @@ services:
             LOGGER_HOST: ${LOGGER_HOST:-172.28.0.2}
             LOGGER_PORT: ${LOGGER_PORT:-24224}
             FDW_PATH: /usr/src
-            SSH_HOST: ${SSH_HOST:-}
             POSTGRES_VERSION: ${POSTGRES_VERSION:-15}
             POSTGRES_USER: ${POSTGRES_USER:-postgres}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fieldsets}
