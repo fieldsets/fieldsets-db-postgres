@@ -33,7 +33,7 @@ create_schemas() {
     mkdir -p /var/lib/postgresql/documents
     mkdir -p /var/lib/postgresql/files
     mkdir -p /var/lib/postgresql/filters
-    mkdir -p /var/lib/postgresql/mappings
+    mkdir -p /var/lib/postgresql/lookups
     mkdir -p /var/lib/postgresql/plugins
     psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
         CREATE SCHEMA IF NOT EXISTS fieldsets;
@@ -49,7 +49,7 @@ create_schemas() {
         CREATE TABLESPACE documents LOCATION '/var/lib/postgresql/documents';
         CREATE TABLESPACE files LOCATION '/var/lib/postgresql/files';
         CREATE TABLESPACE filters LOCATION '/var/lib/postgresql/filters';
-        CREATE TABLESPACE mappings LOCATION '/var/lib/postgresql/mappings';
+        CREATE TABLESPACE lookups LOCATION '/var/lib/postgresql/lookups';
 	EOSQL
 }
 

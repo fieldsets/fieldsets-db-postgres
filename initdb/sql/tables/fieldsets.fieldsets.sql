@@ -29,9 +29,9 @@ CREATE TABLE IF NOT EXISTS fieldsets.__sequence_fieldsets PARTITION OF fieldsets
     FOR VALUES IN ('sequence')
     TABLESPACE fieldsets;
 
--- Mapping Partitions
-CREATE TABLE IF NOT EXISTS fieldsets.__mapping_fieldsets PARTITION OF fieldsets.fieldsets
-    FOR VALUES IN ('mapping')
+-- Looki[] Partitions
+CREATE TABLE IF NOT EXISTS fieldsets.__lookup_fieldsets PARTITION OF fieldsets.fieldsets
+    FOR VALUES IN ('lookup')
     TABLESPACE fieldsets;
 
 -- Document Partitions
