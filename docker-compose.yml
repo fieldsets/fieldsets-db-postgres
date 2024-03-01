@@ -35,8 +35,8 @@ services:
             POSTGRES_WRITER_ROLE_PASSWORD: ${POSTGRES_WRITER_ROLE_PASSWORD:-}
             POSTGRES_TRIGGER_ROLE: ${POSTGRES_TRIGGER_ROLE:-fieldsets_trigger_role}
             POSTGRES_TRIGGER_ROLE_PASSWORD: ${POSTGRES_TRIGGER_ROLE_PASSWORD:-}
-            DEBUG_MODE: ${DEBUG_MODE:-true}
-            LOGGING_ENABLED: ${LOGGING_ENABLED:-false}
+            ENABLE_DEBUG_MODE: ${ENABLE_DEBUG_MODE:-true}
+            ENABLE_LOGGING: ${ENABLE_LOGGING:-false}
         stop_signal: SIGTERM
         stop_grace_period: 1m30s
         oom_kill_disable: true
