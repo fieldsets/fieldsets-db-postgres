@@ -15,8 +15,7 @@ CREATE TABLE IF NOT EXISTS fieldsets.fieldsets (
     field_id            BIGINT NOT NULL,
     field_token         TEXT NOT NULL,
     field_parent        BIGINT NOT NULL,
-    field_parent_token  TEXT NOT NULL,
-    meta  				JSONB NULL
+    field_parent_token  TEXT NOT NULL
 ) PARTITION BY LIST (parent)
 TABLESPACE fieldsets;
 

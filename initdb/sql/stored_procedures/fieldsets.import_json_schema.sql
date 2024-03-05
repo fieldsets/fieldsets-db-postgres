@@ -95,7 +95,9 @@ DO $$ DECLARE
 	set_id BIGINT;
 	field_id BIGINT;
 	fieldset_id BIGINT;
-	parent_id BIGINT;
+	field_parent_id BIGINT;
+	set_parent_id BIGINT;
+	fieldset_parent_id BIGINT;
 BEGIN
 	DROP TABLE IF EXISTS imported_fields;
 	CREATE TEMPORARY TABLE imported_fields(
@@ -142,10 +144,10 @@ BEGIN
 				FROM jsonb_array_elements(fieldsets_record.data)
 		LOOP
 			-- Lookup set ids
-			SELECT id INTO parent_id FROM imported_sets WHERE token = set_record.parent;
-			IF parent_id IS NULL THEN
-				SELECT nextval('fieldsets.set_id_seq') INTO parent_id;
-				INSERT INTO imported_sets(token,id) VALUES (set_record.parent, parent_id);
+			SELECT id INTO set_parent_id FROM imported_sets WHERE token = set_record.parent;
+			IF set_parent_id IS NULL THEN
+				SELECT nextval('fieldsets.set_id_seq') INTO set_parent_id;
+				INSERT INTO imported_sets(token,id) VALUES (set_record.parent, set_parent_id);
 			END IF;
 		
 			SELECT id INTO set_id FROM imported_sets WHERE token = set_record.token;
@@ -155,14 +157,14 @@ BEGIN
 			END IF;
 		
 			-- Create Dynamic Set SQL
-			set_values_sql := format('(%s, %L, %L, %s, %L, %L::JSONB)', set_id, set_record.token, set_record.label, parent_id, set_record.parent, set_record.metadata);
+			set_values_sql := format('(%s, %L, %L, %s, %L, %L::JSONB)', set_id, set_record.token, set_record.label, set_parent_id, set_record.parent, set_record.metadata);
 			insert_values := format('%s\n%s', insert_values, set_values_sql);
 		
 			-- Add fieldset ids to lookup table
-			SELECT id INTO parent_id FROM imported_fieldsets WHERE token = set_record.parent;
-			IF parent_id IS NULL THEN
-				SELECT nextval('fieldsets.fieldset_id_seq') INTO parent_id;
-				INSERT INTO imported_fieldsets(token,id) VALUES (set_record.parent, parent_id);
+			SELECT id INTO fieldset_parent_id FROM imported_fieldsets WHERE token = set_record.parent;
+			IF fieldset_parent_id IS NULL THEN
+				SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_parent_id;
+				INSERT INTO imported_fieldsets(token,id) VALUES (set_record.parent, fieldset_parent_id);
 			END IF;
 		
 			SELECT id INTO fieldset_id FROM imported_fieldsets WHERE token = set_record.token;
@@ -186,10 +188,10 @@ BEGIN
 			field_values_sql := '';
 		
 			-- Create Our Dynamic SQL Field insert statement 
-			SELECT id INTO parent_id FROM imported_fields WHERE token = json_record.field_parent;
-			IF parent_id IS NULL THEN
-				SELECT nextval('fieldsets.field_id_seq') INTO parent_id;
-				INSERT INTO imported_fields(token,id) VALUES (json_record.field_parent, parent_id);
+			SELECT id INTO field_parent_id FROM imported_fields WHERE token = json_record.field_parent;
+			IF field_parent_id IS NULL THEN
+				SELECT nextval('fieldsets.field_id_seq') INTO field_parent_id;
+				INSERT INTO imported_fields(token,id) VALUES (json_record.field_parent, field_parent_id);
 			END IF;
 		
 			SELECT id INTO field_id FROM imported_fields WHERE token = json_record.field_token;
@@ -198,12 +200,28 @@ BEGIN
 				INSERT INTO imported_fields(token,id) VALUES (json_record.field_token, field_id);
 			END IF;
 			
-			field_values_sql := format('(%s, %L, %L, %L, %L, %L, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type, json_record.field_default_value::TEXT, json_record.field_store, parent_id, json_record.field_parent, json_record.field_metadata::TEXT);
+			field_values_sql := format('(%s, %L, %L, %L, %L, %L, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type, json_record.field_default_value::TEXT, json_record.field_store, field_parent_id, json_record.field_parent, json_record.field_metadata::TEXT);
 			insert_values := format('%s\n%s', insert_values, field_values_sql);
-			insert_stmt := format('%s %s\nON CONFLICT DO NOTHING', insert_fields_sql, insert_values);		
+			insert_stmt := format('%s %s\nON CONFLICT DO NOTHING', insert_fields_sql, insert_values);
 			RAISE NOTICE 'FIELD INSERT  SQL: %', insert_stmt;
 			
+			-- Insert our fieldset schema data
+			SELECT id INTO fieldset_parent_id FROM imported_fieldsets WHERE token = json_record.set_parent;
+			IF fieldset_parent_id IS NULL THEN
+				SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_parent_id;
+				INSERT INTO imported_fieldsets(token,id) VALUES (json_record.set_parent, fieldset_parent_id);
+			END IF;
 		
+			SELECT id INTO fieldset_id FROM imported_fieldsets WHERE token = json_record.set_token;
+			IF fieldset_id IS NULL THEN
+				SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_id;
+				INSERT INTO imported_fields(token,id) VALUES (json_record.field_token, fieldset_id);
+			END IF;
+			
+			--field_values_sql := format('(%s, %L, %L, %L, %L, %L, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type, json_record.field_default_value::TEXT, json_record.field_store, parent_id, json_record.field_parent, json_record.field_metadata::TEXT);
+			--insert_values := format('%s\n%s', insert_values, field_values_sql);
+			--insert_stmt := format('%s %s\nON CONFLICT DO NOTHING', insert_fields_sql, insert_values);		
+			--RAISE NOTICE 'FIELD INSERT  SQL: %', insert_stmt;
 			
 		END LOOP;		
 	END LOOP;	
