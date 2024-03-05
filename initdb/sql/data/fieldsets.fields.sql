@@ -1,19 +1,24 @@
-INSERT INTO fieldsets.fields (id, token, label, type, default_value, parent, parent_token, meta) VALUES
-    (0, 'field', 'Default Field', 'any', NULL, 0, 'field', '{}'::JSONB),
-    (1, 'fieldset', 'FieldSet Field', 'fieldset', NULL, 0, 'field', '{}'::JSONB),
-    (2, 'string', 'String Field', 'string', NULL, 0, 'field', '{}'::JSONB),
-    (3, 'number', 'Number Field', 'number', NULL, 0, 'field', '{}'::JSONB),
-    (4, 'decimal', 'Decimal Field', 'decimal', NULL, 0, 'field', '{}'::JSONB),
-    (5, 'object', 'Object Field', 'object', NULL, 0, 'field', '{}'::JSONB),
-    (6, 'list', 'String List Field', 'list', NULL, 0, 'field', '{}'::JSONB),
-    (7, 'array', 'Integer Array Field', 'array', NULL, 0, 'field', '{}'::JSONB),
-    (8, 'vector', 'Vector Field', 'vector', NULL, 0, 'field', '{}'::JSONB),
-    (9, 'bool', 'Boolean Field', 'bool', NULL, 0, 'field', '{}'::JSONB),
-    (10, 'date', 'Date Field', 'date', NULL, 0, 'field', '{}'::JSONB),
-    (11, 'ts', 'Timestamp Field', 'ts', NULL, 0, 'field', '{}'::JSONB),
-    (12, 'search', 'Search Field', 'search', NULL, 0, 'field', '{}'::JSONB),
-    (13, 'uuid', 'UUID Field', 'uuid', NULL, 0, 'field', '{}'::JSONB),
-    (14, 'function', 'Function Field', 'function', NULL, 0, 'field', '{}'::JSONB),
-    (15, 'custom', 'Custom Field', 'any', NULL, 0, 'field', '{}'::JSONB),
-    (16, 'any', 'Any Field', 'any', NULL, 0, 'field', '{}'::JSONB)
+INSERT INTO fieldsets.fields (id, token, label, type, default_value, store, parent, parent_token, meta) VALUES
+    (0, 'none', 'Fieldless', 'none', NULL, 'none', 0, 'none', '{}'::JSONB),
+    (1, 'field', 'Field', 'any', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (2, 'fieldset', 'FieldSet Field', 'fieldset', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (3, 'string', 'String Field', 'string', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (4, 'number', 'Number Field', 'number', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (5, 'decimal', 'Decimal Field', 'decimal', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (6, 'object', 'Object Field', 'object', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (7, 'list', 'String List Field', 'list', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (8, 'array', 'Integer Array Field', 'array', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (9, 'vector', 'Vector Field', 'vector', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (10, 'bool', 'Boolean Field', 'bool', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (11, 'date', 'Date Field', 'date', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (12, 'ts', 'Timestamp Field', 'ts', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (13, 'search', 'Search Field', 'search', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (14, 'uuid', 'UUID Field', 'uuid', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (15, 'function', 'Function Field', 'function', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (16, 'alias', 'Alias Field', 'alias', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (17, 'custom', 'Custom Field', 'any', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (18, 'any', 'Any Field', 'any', NULL, 'any', 1, 'field', '{}'::JSONB)
 ON CONFLICT DO NOTHING;
+
+-- Set starting set val at 100.
+SELECT setval('fieldsets.field_id_seq', 100, false);

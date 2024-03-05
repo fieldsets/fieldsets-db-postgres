@@ -5,3 +5,6 @@ CREATE SEQUENCE fieldsets.fieldset_id_seq
 	START 1
 	CACHE 1
 	NO CYCLE;
+
+ALTER TABLE fieldsets.fieldsets
+ALTER COLUMN id SET DEFAULT nextval('fieldsets.fieldset_id_seq');

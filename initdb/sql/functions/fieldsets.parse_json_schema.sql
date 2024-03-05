@@ -36,7 +36,7 @@ AS $function$
             WHEN field ? 'parent' THEN
                 field ->> 'parent'
             ELSE
-                NULL
+                field ->> 'type'
         END AS field_parent,
         CASE
             WHEN field ? 'value' THEN

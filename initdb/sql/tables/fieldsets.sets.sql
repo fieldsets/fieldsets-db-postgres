@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS fieldsets.sets (
     label      	    TEXT NULL,
     parent     	    BIGINT NULL,
     parent_token    VARCHAR(255) NULL DEFAULT 'fieldset',
-    default_store   STORE_TYPE NULL DEFAULT 'filter'::STORE_TYPE,
     meta  		    JSONB NULL
 ) PARTITION BY LIST (parent)
 TABLESPACE fieldsets;

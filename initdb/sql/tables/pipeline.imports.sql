@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS pipeline.imports(
     source TEXT NULL,
     type TEXT NULL,
     priority INT NULL,
-    data JSONB NULL
+    data JSONB NULL,
+    imported BOOLEAN DEFAULT FALSE
 )
 TABLESPACE pipeline;

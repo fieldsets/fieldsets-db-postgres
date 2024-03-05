@@ -1,1 +1,1 @@
-CREATE INDEX schema_data_idx ON fieldsets.imports USING gin (schema_data);
+CREATE INDEX import_data_idx ON pipeline.imports USING gin (data);
