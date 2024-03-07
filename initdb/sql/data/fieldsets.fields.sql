@@ -16,8 +16,9 @@ INSERT INTO fieldsets.fields (id, token, label, type, default_value, store, pare
     (14, 'uuid', 'UUID Field', 'uuid', NULL, 'any', 1, 'field', '{}'::JSONB),
     (15, 'function', 'Function Field', 'function', NULL, 'any', 1, 'field', '{}'::JSONB),
     (16, 'alias', 'Alias Field', 'alias', NULL, 'any', 1, 'field', '{}'::JSONB),
-    (17, 'custom', 'Custom Field', 'any', NULL, 'any', 1, 'field', '{}'::JSONB),
-    (18, 'any', 'Any Field', 'any', NULL, 'any', 1, 'field', '{}'::JSONB)
+    (17, 'enum', 'Enumerated Field', 'enum', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (18, 'custom', 'Custom Field', 'any', NULL, 'any', 1, 'field', '{}'::JSONB),
+    (19, 'any', 'Any Field', 'any', NULL, 'any', 1, 'field', '{}'::JSONB)
 ON CONFLICT DO NOTHING;
 
 -- Set starting set val at 100.

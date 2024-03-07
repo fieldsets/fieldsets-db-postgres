@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS fieldsets.fieldsets (
 ) PARTITION BY LIST (parent)
 TABLESPACE fieldsets;
 
--- Partition by parent, id % 5 (modulus)
+-- Partition by parent, field_parent, id % 5 (modulus)
 
 -- Default if not defined.
 CREATE TABLE IF NOT EXISTS fieldsets.__default_fieldsets PARTITION OF fieldsets.fieldsets DEFAULT TABLESPACE fieldsets;
