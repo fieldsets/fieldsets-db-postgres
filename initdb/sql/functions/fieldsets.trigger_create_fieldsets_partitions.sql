@@ -1,8 +1,8 @@
 /**
- * trigger_create_sets_partitions: triggered after a set is defined. Create a new data table partition.
- * @depends TRIGGER: create_set_partitions
+ * trigger_create_fieldsets_partitions: triggered after a set is defined. Create a new data table partition.
+ * @depends TRIGGER: create_fieldsets_partitions
  **/
-CREATE OR REPLACE FUNCTION fieldsets.trigger_create_sets_partitions() RETURNS trigger AS $function$
+CREATE OR REPLACE FUNCTION fieldsets.trigger_create_fieldsets_partitions() RETURNS trigger AS $function$
   DECLARE
     partition_status BOOLEAN;
     create_tbl_sql TEXT;
@@ -32,8 +32,8 @@ CREATE OR REPLACE FUNCTION fieldsets.trigger_create_sets_partitions() RETURNS tr
   END;
 $function$ LANGUAGE plpgsql;
 
-COMMENT ON FUNCTION fieldsets.trigger_create_sets_partitions() IS 
+COMMENT ON FUNCTION fieldsets.trigger_create_fieldsets_partitions() IS 
 '/**
- * trigger_create_sets_partitions: triggered before insert into data_values. Create a new data table if doesn''t exist and notify parent table to attach as partition.
+ * trigger_create_fieldsets_partitions: triggered before insert into data_values. Create a new data table if doesn''t exist and notify parent table to attach as partition.
  * @depends TRIGGER: create_sets_partitions
  **/';

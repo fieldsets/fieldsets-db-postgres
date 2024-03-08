@@ -7,13 +7,11 @@ CREATE TABLE IF NOT EXISTS fieldsets.sets (
     id         	    BIGINT NOT NULL,
     token     	    VARCHAR(255) NOT NULL,
     label      	    TEXT NULL,
-    parent     	    BIGINT NULL,
-    parent_token    VARCHAR(255) NULL DEFAULT 'fieldset',
-    meta  		    JSONB NULL
-) PARTITION BY LIST (parent)
+    parent     	    BIGINT NOT NULL DEFAULT 1,
+    parent_token    VARCHAR(255) NOT NULL DEFAULT 'fieldset',
+    meta  		    JSONB NULL DEFAULT '{}'::JSONB
+) PARTITION BY LIST (parent_token)
 TABLESPACE fieldsets;
-
--- Partition by parent, id % 5 (modulus)
 
 -- Default if not defined.
 CREATE TABLE IF NOT EXISTS fieldsets.__default_sets PARTITION OF fieldsets.sets DEFAULT TABLESPACE fieldsets;
