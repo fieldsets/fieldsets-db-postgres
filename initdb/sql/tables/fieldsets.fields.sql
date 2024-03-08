@@ -10,9 +10,3 @@ CREATE TABLE IF NOT EXISTS fieldsets.fields (
     meta  				JSONB NULL DEFAULT '{}'::JSONB
 ) PARTITION BY LIST (store)
 TABLESPACE fieldsets;
-
--- Partition by store, type, id % 5 (modulus)
-
--- Default if not defined.
--- CREATE TABLE IF NOT EXISTS fieldsets.__default_fields PARTITION OF fieldsets.fields DEFAULT TABLESPACE fieldsets;
-

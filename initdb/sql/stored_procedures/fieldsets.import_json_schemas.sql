@@ -14,7 +14,7 @@ DECLARE
 	insert_values TEXT := '';
 	insert_fields_sql TEXT := 'INSERT INTO fieldsets.fields (id, token, label, type, default_value, store, parent, parent_token, meta) VALUES';
 	insert_sets_sql TEXT := 'INSERT INTO fieldsets.sets (id, token, label, parent, parent_token, meta) VALUES';
-	insert_fieldsets_sql TEXT := 'INSERT INTO fieldsets.fieldsets (id, token, parent, parent_token, set_id, set_token, set_parent, set_parent_token, field_id, field_token, field_parent, field_parent_token) VALUES';
+	insert_fieldsets_sql TEXT := 'INSERT INTO fieldsets.fieldsets (id, token, parent, parent_token, set_id, field_id, type, store) VALUES';
 	field_values_sql TEXT;
 	set_values_sql TEXT;
 	fieldset_values_sql TEXT;
@@ -102,7 +102,7 @@ BEGIN
 
 		insert_stmt := format('%s %s,', insert_sets_sql, insert_values);
 		insert_stmt := trim(TRAILING ',' FROM insert_stmt);
-		PERFORM insert_stmt;
+		EXECUTE format('%s ON CONFLICT DO NOTHING;', insert_stmt);
 
 		json_txt := fieldsets_record.data::TEXT;
 		query_sql := format('SELECT * FROM fieldsets.parse_json_schema(%L);', json_txt);
@@ -131,11 +131,11 @@ BEGIN
 				default_field_value := fieldsets.create_field_value(json_record.field_default_value, json_record.field_type);
 			END IF;
 
-			field_values_sql := format('(%s, %L, %L, %L::FIELD_TYPE, %L::FIELD_VALUE, %L::STORE_TYPE, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type, default_field_value::TEXT, json_record.field_store, field_parent_id, json_record.field_parent, json_record.field_metadata::TEXT);
+			field_values_sql := format('(%s, %L, %L, %L, %L::FIELD_VALUE, %L, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type, default_field_value::TEXT, json_record.field_store, field_parent_id, json_record.field_parent, json_record.field_metadata::TEXT);
 			insert_values := format(E'%s\n%s,', insert_values, field_values_sql);
 			insert_stmt := format('%s %s', insert_fields_sql, insert_values);
 			insert_stmt := trim(TRAILING ',' FROM insert_stmt);
-			PERFORM insert_stmt;
+			EXECUTE format('%s ON CONFLICT DO NOTHING;', insert_stmt);
 
 			insert_stmt := '';
 			insert_values := '';
@@ -146,12 +146,12 @@ BEGIN
 			SELECT id INTO fieldset_id FROM imported_fieldsets WHERE token = json_record.set_token;
 			SELECT id INTO set_id FROM imported_sets WHERE token = json_record.set_token;
 
-			fieldset_values_sql := format('(%s, %L, %s, %L, %s, %L, %s, %L, %s, %L, %s, %L)', fieldset_id, json_record.set_token, fieldset_parent_id, json_record.set_parent, set_id, json_record.set_token, set_parent_id, json_record.set_parent, field_id, json_record.field_token, field_parent_id, json_record.field_parent);
+			fieldset_values_sql := format('(%s, %L, %s, %L, %s, %s,  %L, %L)', fieldset_id, json_record.set_token, fieldset_parent_id, json_record.set_parent, set_id, field_id, json_record.field_type, json_record.field_store);
 			insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
 			insert_stmt := format('%s %s', insert_fieldsets_sql, insert_values);
 			insert_stmt := trim(TRAILING ',' FROM insert_stmt);
 
-			PERFORM insert_stmt;
+			EXECUTE format('%s ON CONFLICT DO NOTHING;', insert_stmt);
 		END LOOP;
 
 		UPDATE pipeline.imports SET imported = TRUE WHERE token = fieldsets_record.token AND type = 'schema' AND source = fieldsets_record.source AND priority = fieldsets_record.priority;
