@@ -131,7 +131,7 @@ BEGIN
 				default_field_value := fieldsets.create_field_value(json_record.field_default_value, json_record.field_type);
 			END IF;
 
-			field_values_sql := format('(%s, %L, %L, %L, %L::FIELD_VALUE, %L, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type, default_field_value::TEXT, json_record.field_store, field_parent_id, json_record.field_parent, json_record.field_metadata::TEXT);
+			field_values_sql := format('(%s, %L, %L, %L::FIELD_TYPE, %L::FIELD_VALUE, %L::STORE_TYPE, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type::TEXT, default_field_value::TEXT, json_record.field_store::TEXT, field_parent_id, json_record.field_parent, json_record.field_metadata::TEXT);
 			insert_values := format(E'%s\n%s,', insert_values, field_values_sql);
 			insert_stmt := format('%s %s', insert_fields_sql, insert_values);
 			insert_stmt := trim(TRAILING ',' FROM insert_stmt);
@@ -146,7 +146,7 @@ BEGIN
 			SELECT id INTO fieldset_id FROM imported_fieldsets WHERE token = json_record.set_token;
 			SELECT id INTO set_id FROM imported_sets WHERE token = json_record.set_token;
 
-			fieldset_values_sql := format('(%s, %L, %s, %L, %s, %s,  %L, %L)', fieldset_id, json_record.set_token, fieldset_parent_id, json_record.set_parent, set_id, field_id, json_record.field_type, json_record.field_store);
+			fieldset_values_sql := format('(%s, %L, %s, %L, %s, %s, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_id, json_record.set_token, fieldset_parent_id, json_record.set_parent, set_id, field_id, json_record.field_type::TEXT, json_record.field_store::TEXT);
 			insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
 			insert_stmt := format('%s %s', insert_fieldsets_sql, insert_values);
 			insert_stmt := trim(TRAILING ',' FROM insert_stmt);

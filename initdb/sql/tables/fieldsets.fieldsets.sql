@@ -1,7 +1,7 @@
 /**
  * Fieldsets can be thought of as subsets with their own unique ID.
  * They defined what data is what and which fields belong together.
- * Partition by set_id, parent, store, type, id % 5 (modulus)
+ * Partition by set_id, store, type, id % 5 (modulus)
  */
 CREATE TABLE IF NOT EXISTS fieldsets.fieldsets (
     id                  BIGINT NOT NULL,
