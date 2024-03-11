@@ -96,10 +96,24 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     mkdir -p /var/lib/postgresql/pipeline && \
     mkdir -p /var/lib/postgresql/data && \
     mkdir -p /var/lib/postgresql/logs && \
+    mkdir -p /var/lib/postgresql/fieldsets && \
+    mkdir -p /var/lib/postgresql/filters && \
+    mkdir -p /var/lib/postgresql/documents && \
+    mkdir -p /var/lib/postgresql/records && \
+    mkdir -p /var/lib/postgresql/lookups && \
+    mkdir -p /var/lib/postgresql/sequences && \
+    mkdir -p /var/lib/postgresql/messages && \
     chown postgres:postgres /var/lib/postgresql/data && \
     chown postgres:postgres /var/lib/postgresql/logs && \
     chown postgres:postgres /var/lib/postgresql/archive && \
     chown postgres:postgres /var/lib/postgresql/pipeline && \
+    chown postgres:postgres /var/lib/postgresql/fieldsets && \
+    chown postgres:postgres /var/lib/postgresql/filters && \
+    chown postgres:postgres /var/lib/postgresql/documents && \
+    chown postgres:postgres /var/lib/postgresql/records && \
+    chown postgres:postgres /var/lib/postgresql/lookups && \
+    chown postgres:postgres /var/lib/postgresql/sequences && \
+    chown postgres:postgres /var/lib/postgresql/messages && \
     mkdir /data && \
     chown postgres:postgres /data
 

@@ -47,9 +47,11 @@ create_schemas() {
         -- Create tablespaces for PG based stores. This allows you to mount separate volumes and disk types for a store type.
         CREATE TABLESPACE plugins LOCATION '/var/lib/postgresql/plugins';
         CREATE TABLESPACE documents LOCATION '/var/lib/postgresql/documents';
-        CREATE TABLESPACE files LOCATION '/var/lib/postgresql/files';
         CREATE TABLESPACE filters LOCATION '/var/lib/postgresql/filters';
         CREATE TABLESPACE lookups LOCATION '/var/lib/postgresql/lookups';
+        CREATE TABLESPACE messages LOCATION '/var/lib/postgresql/messages';
+        CREATE TABLESPACE records LOCATION '/var/lib/postgresql/records';
+        CREATE TABLESPACE sequences LOCATION '/var/lib/postgresql/sequences';
 	EOSQL
 }
 

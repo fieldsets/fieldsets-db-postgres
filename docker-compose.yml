@@ -57,6 +57,13 @@ services:
             - postgres-logs:/var/lib/postgresql/logs
             - postgres-archive:/var/lib/postgresql/archive
             - postgres-pipeline:/var/lib/postgresql/pipeline
+            - postgres-fieldsets:/var/lib/postgresql/fieldsets
+            - postgres-filters:/var/lib/postgresql/filters
+            - postgres-records:/var/lib/postgresql/records
+            - postgres-documents:/var/lib/postgresql/documents
+            - postgres-lookups:/var/lib/postgresql/lookups
+            - postgres-messages:/var/lib/postgresql/messages
+            - postgres-sequences:/var/lib/postgresql/sequences
 volumes:
     postgres-data:
         driver: local
@@ -70,3 +77,24 @@ volumes:
     postgres-pipeline:
         driver: local
         name: fieldsets-db-pipeline
+    postgres-fieldsets:
+        driver: local
+        name: fieldsets-db-fieldsets
+    postgres-filters:
+        driver: local
+        name: fieldsets-db-filters
+    postgres-records:
+        driver: local
+        name: fieldsets-db-records
+    postgres-documents:
+        driver: local
+        name: fieldsets-db-documents
+    postgres-lookups:
+        driver: local
+        name: fieldsets-db-lookups
+    postgres-messages:
+        driver: local
+        name: fieldsets-db-messages
+    postgres-sequences:
+        driver: local
+        name: fieldsets-db-sequences

@@ -5,6 +5,7 @@
 DROP TRIGGER IF EXISTS trigger_30_setup_stores ON fieldsets.fieldsets;
 CREATE TRIGGER trigger_30_setup_stores
 AFTER INSERT ON fieldsets.fieldsets
+REFERENCING NEW TABLE AS new_fieldsets
 FOR EACH STATEMENT
 EXECUTE FUNCTION fieldsets.trigger_setup_stores();
 
