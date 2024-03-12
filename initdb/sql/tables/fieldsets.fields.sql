@@ -8,5 +8,4 @@ CREATE TABLE IF NOT EXISTS fieldsets.fields (
     default_value 		FIELD_VALUE NULL,
     store               STORE_TYPE NULL DEFAULT 'filter'::STORE_TYPE,
     meta  				JSONB NULL DEFAULT '{}'::JSONB
-)
-TABLESPACE fieldsets;
+) TABLESPACE fieldsets;

@@ -9,7 +9,7 @@ BEGIN
             'lookup',
             'record',
             'document',
-            'message',
+            'stream',
             'sequence',
             'view',
             'file',

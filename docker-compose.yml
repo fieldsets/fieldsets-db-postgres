@@ -62,7 +62,7 @@ services:
             - postgres-records:/var/lib/postgresql/records
             - postgres-documents:/var/lib/postgresql/documents
             - postgres-lookups:/var/lib/postgresql/lookups
-            - postgres-messages:/var/lib/postgresql/messages
+            - postgres-streams:/var/lib/postgresql/streams
             - postgres-sequences:/var/lib/postgresql/sequences
 volumes:
     postgres-data:
@@ -92,9 +92,9 @@ volumes:
     postgres-lookups:
         driver: local
         name: fieldsets-db-lookups
-    postgres-messages:
+    postgres-streams:
         driver: local
-        name: fieldsets-db-messages
+        name: fieldsets-db-streams
     postgres-sequences:
         driver: local
         name: fieldsets-db-sequences

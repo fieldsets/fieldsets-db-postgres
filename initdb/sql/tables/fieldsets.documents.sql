@@ -9,4 +9,5 @@ CREATE TABLE IF NOT EXISTS fieldsets.documents (
     document    JSONB,
     created     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated     TIMESTAMPTZ NOT NULL DEFAULT NOW()
-) TABLESPACE documents;
+) PARTITION BY LIST (parent)
+TABLESPACE documents;

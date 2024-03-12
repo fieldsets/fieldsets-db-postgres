@@ -102,7 +102,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     mkdir -p /var/lib/postgresql/records && \
     mkdir -p /var/lib/postgresql/lookups && \
     mkdir -p /var/lib/postgresql/sequences && \
-    mkdir -p /var/lib/postgresql/messages && \
+    mkdir -p /var/lib/postgresql/streams && \
     chown postgres:postgres /var/lib/postgresql/data && \
     chown postgres:postgres /var/lib/postgresql/logs && \
     chown postgres:postgres /var/lib/postgresql/archive && \
@@ -113,7 +113,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     chown postgres:postgres /var/lib/postgresql/records && \
     chown postgres:postgres /var/lib/postgresql/lookups && \
     chown postgres:postgres /var/lib/postgresql/sequences && \
-    chown postgres:postgres /var/lib/postgresql/messages && \
+    chown postgres:postgres /var/lib/postgresql/streams && \
     mkdir /data && \
     chown postgres:postgres /data
 

@@ -49,7 +49,7 @@ create_schemas() {
         CREATE TABLESPACE documents LOCATION '/var/lib/postgresql/documents';
         CREATE TABLESPACE filters LOCATION '/var/lib/postgresql/filters';
         CREATE TABLESPACE lookups LOCATION '/var/lib/postgresql/lookups';
-        CREATE TABLESPACE messages LOCATION '/var/lib/postgresql/messages';
+        CREATE TABLESPACE streams LOCATION '/var/lib/postgresql/streams';
         CREATE TABLESPACE records LOCATION '/var/lib/postgresql/records';
         CREATE TABLESPACE sequences LOCATION '/var/lib/postgresql/sequences';
 	EOSQL
