@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION fieldsets.trigger_create_fieldsets_partitions() RETUR
     IF partition_status IS NULL THEN
       create_tbl_sql := format('CREATE TABLE IF NOT EXISTS fieldsets.%I PARTITION OF fieldsets.fieldsets FOR VALUES IN (%s) PARTITION BY LIST(store) TABLESPACE fieldsets;', parent_table_name, NEW.parent::TEXT);
       EXECUTE create_tbl_sql;
-      create_tbl_sql := format('CALL fieldsets.create_fields_partitions(%L, %L, 0);', parent_table_name, 'fieldsets');
+      create_tbl_sql := format('CALL fieldsets.create_store_partitions(%L, %L);', parent_table_name, 'fieldsets');
       EXECUTE create_tbl_sql;
     END IF;
 
@@ -27,14 +27,14 @@ CREATE OR REPLACE FUNCTION fieldsets.trigger_create_fieldsets_partitions() RETUR
     IF partition_status IS NULL THEN
       create_tbl_sql := format('CREATE TABLE IF NOT EXISTS fieldsets.%I PARTITION OF fieldsets.fieldsets FOR VALUES IN (%s) PARTITION BY LIST(store) TABLESPACE fieldsets;', partition_table_name, NEW.id::TEXT);
       EXECUTE create_tbl_sql;
-      create_tbl_sql := format('CALL fieldsets.create_fields_partitions(%L, %L, 0);', partition_table_name, 'fieldsets');
+      create_tbl_sql := format('CALL fieldsets.create_store_partitions(%L, %L);', partition_table_name, 'fieldsets');
       EXECUTE create_tbl_sql;
     END IF;
     RETURN NEW;
   END;
 $function$ LANGUAGE plpgsql;
 
-COMMENT ON FUNCTION fieldsets.trigger_create_fieldsets_partitions() IS 
+COMMENT ON FUNCTION fieldsets.trigger_create_fieldsets_partitions() IS
 '/**
  * trigger_create_fieldsets_partitions: triggered before insert into data_values. Create a new data table if doesn''t exist and notify parent table to attach as partition.
  * @depends TRIGGER: create_fieldsets_partitions

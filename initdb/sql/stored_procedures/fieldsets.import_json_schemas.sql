@@ -15,7 +15,7 @@ DECLARE
 	insert_fieldset_values TEXT := '';
 	insert_fields_sql TEXT := 'INSERT INTO fieldsets.fields (id, token, label, type, default_value, store, parent, parent_token, meta) VALUES';
 	insert_sets_sql TEXT := 'INSERT INTO fieldsets.sets (id, token, label, parent, parent_token, meta) VALUES';
-	insert_fieldsets_sql TEXT := 'INSERT INTO fieldsets.fieldsets (id, token, parent, parent_token, set_id, field_id, type, store) VALUES';
+	insert_fieldsets_sql TEXT := 'INSERT INTO fieldsets.fieldsets (id, token, label, parent, parent_token, set_id, set_token, field_id, field_token, type, store) VALUES';
 	field_values_sql TEXT;
 	set_values_sql TEXT;
 	fieldset_values_sql TEXT;
@@ -103,7 +103,7 @@ BEGIN
 				INSERT INTO imported_fieldsets(token,id) VALUES (set_record.token, fieldset_id);
 			END IF;
 
-			fieldset_values_sql := format('(%s, %L, %s, %L, %s, %s, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_id, set_record.token, fieldset_parent_id, set_record.parent, set_id, 1, 'any', 'any');
+			fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_id, set_record.token, set_record.label, fieldset_parent_id, set_record.parent, set_id, set_record.token, 2, 'fieldset', 'fieldset', 'fieldset');
 			insert_fieldset_values := format(E'%s\n%s,', insert_fieldset_values, fieldset_values_sql);
 		END LOOP;
 
@@ -153,11 +153,10 @@ BEGIN
 			fieldset_values_sql := '';
 
 			-- Insert our fieldset schema data
-			SELECT id INTO fieldset_parent_id FROM imported_fieldsets WHERE token = json_record.set_token;
 			SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_id;
 			SELECT id INTO set_id FROM imported_sets WHERE token = json_record.set_token;
 
-			fieldset_values_sql := format('(%s, %L, %s, %L, %s, %s, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_id, json_record.field_token, fieldset_parent_id, json_record.set_token, set_id, field_id, json_record.field_type::TEXT, json_record.field_store::TEXT);
+			fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_id, json_record.field_token, json_record.field_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, json_record.field_type::TEXT, json_record.field_store::TEXT);
 			insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
 			insert_stmt := format('%s %s', insert_fieldsets_sql, insert_values);
 			insert_stmt := trim(TRAILING ',' FROM insert_stmt);

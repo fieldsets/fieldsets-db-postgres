@@ -5,7 +5,5 @@
  */
 CREATE TABLE IF NOT EXISTS fieldsets.lookups (
     id              BIGINT NOT NULL,
-    parent          BIGINT NOT NULL,
-    lookup_id       BIGINT NOT NULL
-)PARTITION BY LIST (parent)
-TABLESPACE lookups;
+    parent          BIGINT NOT NULL
+) TABLESPACE lookups;

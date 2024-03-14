@@ -6,10 +6,13 @@
 CREATE TABLE IF NOT EXISTS fieldsets.fieldsets (
     id                  BIGINT NOT NULL,
     token               TEXT NOT NULL,
+    label               TEXT NOT NULL,
     parent              BIGINT NOT NULL,
     parent_token        TEXT NOT NULL,
     set_id              BIGINT NOT NULL,
+    set_token           TEXT NOT NULL,
     field_id            BIGINT NOT NULL,
+    field_token         TEXT NOT NULL,
     type                FIELD_TYPE NOT NULL DEFAULT 'string'::FIELD_TYPE,
     store               STORE_TYPE NULL DEFAULT 'filter'::STORE_TYPE
 ) PARTITION BY LIST (set_id)

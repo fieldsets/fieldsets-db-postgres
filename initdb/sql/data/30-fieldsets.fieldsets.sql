@@ -1,7 +1,7 @@
 -- Core fieldsets should be between 0 & 100.
-INSERT INTO fieldsets.fieldsets (id, token, parent, parent_token, set_id, field_id, type, store) VALUES
-    (0, 'none', 0, 'none', 0, 0, 'none', 'none'),
-    (1, 'fieldset', 1, 'fieldset', 1, 1, 'any', 'any')
+INSERT INTO fieldsets.fieldsets (id, token, label, parent, parent_token, set_id, set_token, field_id, field_token, type, store) VALUES
+    (0, 'none', 'Non Fieldset Grouping', 0, 'none', 0, 'none', 0, 'none', 'fieldset', 'none'),
+    (1, 'fieldset', 'Fieldset', 1, 'fieldset', 1, 'fieldset', 1, 'fieldset', 'fieldset', 'fieldset')
 ON CONFLICT DO NOTHING;
 
 -- Set starting set val at 1000.

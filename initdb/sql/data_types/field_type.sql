@@ -5,6 +5,7 @@ BEGIN
     IF NOT type_exists THEN
         EXECUTE format(
             'CREATE TYPE FIELD_TYPE AS ENUM (%L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L);',
+            'none',
             'fieldset',
             'string',
             'number',
@@ -22,7 +23,6 @@ BEGIN
             'alias',
             'enum',
             'custom',
-            'none',
             'any'
         );
     END IF;

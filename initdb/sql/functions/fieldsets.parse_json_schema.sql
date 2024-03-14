@@ -71,7 +71,7 @@ AS $function$
                     WHEN value ? 'parent' THEN
                         value ->> 'parent'
                     ELSE
-                        'fieldset'
+                        value ->> 'token'
                 END AS parent,
                 value -> 'fields' AS fields,
                 CASE
