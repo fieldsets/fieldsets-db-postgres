@@ -4,25 +4,26 @@
 CREATE OR REPLACE PROCEDURE fieldsets.import_json_data() AS $procedure$
 DECLARE
 	json_record RECORD;
+	json_path TEXT;
+	json_data JSONB;
 	data_record RECORD;
-	parent_record RECORD;
-	fieldset_record RECORD;
-	set_record RECORD;
 	insert_stmt TEXT := '';
-	insert_values TEXT := '';
-	insert_fieldset_values TEXT := '';
-	insert_fieldsets_sql TEXT := 'INSERT INTO fieldsets.fieldsets (id, token, label, parent, parent_token, set_id, set_token, field_id, field_token, type, store) VALUES';
-	fieldset_values_sql TEXT;
-	field_id BIGINT;
-	field_token TEXT;
+	stores_insert_stmt TEXT := '';
+	field_record RECORD;
 	field_name TEXT;
 	field_value TEXT;
 	field_data_type TEXT;
-	set_id BIGINT;
-	set_token TEXT;
+	set_record RECORD;
+	set_parent_record RECORD;
+	set_parent_id BIGINT;
+	fieldset_parent_token TEXT;
+	fieldset_record RECORD;
+	fieldset_parent_record RECORD;
 	fieldset_id BIGINT;
 	fieldset_token TEXT;
 	fieldset_parent_id BIGINT;
+	fieldset_label TEXT;
+	stream_data TEXT;
 BEGIN
 	FOR data_record IN
 		SELECT
@@ -36,27 +37,31 @@ BEGIN
 		ORDER BY priority
 	LOOP
 		insert_stmt := '';
-		insert_values := '';
-		insert_fieldset_values := '';
-		fieldset_values_sql := '';
+
+		SELECT id INTO set_parent_id FROM fieldsets.sets WHERE token = data_record.token;
 
 		FOR json_record IN
 			SELECT
 				value
 			FROM jsonb_array_elements(data_record.data)
 		LOOP
-			set_token := json_record.value->>'parent';
+			fieldset_parent_token := json_record.value->>'parent';
 			fieldset_token := json_record.value->>'token';
 			fieldset_label := json_record.value->>'label';
+			-- Make sure sets and their partition tables are created.
+			SELECT id, token INTO set_parent_record FROM fieldsets.sets WHERE token = fieldset_parent_token;
 
-			SELECT id, token INTO set_record FROM fieldsets.sets WHERE token = set_token;
+			SELECT id, token INTO set_record FROM fieldsets.sets WHERE token = fieldset_token;
+
 			SELECT id, token INTO field_record FROM fieldsets.fields WHERE token = fieldset_token;
-			SELECT id, token INTO parent_record FROM fieldsets.fieldsets WHERE token = set_token AND set_token = set_token AND store = 'fieldset'::STORE_TYPE;
+			SELECT id, token INTO fieldset_parent_record FROM fieldsets.fieldsets WHERE token = fieldset_parent_token AND set_token = data_record.token AND store = 'fieldset'::STORE_TYPE;
 
-			SELECT id INTO fieldset_id FROM fieldsets.fieldsets WHERE token = fieldset_token AND set_token = set_token AND store = 'fieldset'::STORE_TYPE;
+			SELECT id INTO fieldset_id FROM fieldsets.fieldsets WHERE token = fieldset_token AND set_token = data_record.token AND store = 'fieldset'::STORE_TYPE;
 			IF fieldset_id IS NULL THEN
 				SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_id;
-				--INSERT INTO fieldsets.fieldsets(id, token, label, parent, parent_token, set_id, set_token, field_id, field_token, type, store) VALUES (fieldset_id, fieldset_token, fieldset_label, parent_record.id, set_token, set_record.id, set_token, 2, 'fieldset', 'fieldset'::FIELD_TYPE, 'fieldset'::STORE_TYPE);
+				insert_stmt := format('INSERT INTO fieldsets.fieldsets(id, token, label, parent, parent_token, set_id, set_token, field_id, field_token, type, store) VALUES (%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE);', fieldset_id, fieldset_token, fieldset_label, fieldset_parent_record.id, fieldset_parent_token, set_parent_id, data_record.token, 2, 'fieldset', 'fieldset', 'fieldset');
+				EXECUTE insert_stmt;
+				COMMIT;
 			END IF;
 
 			FOR field_name IN
@@ -77,33 +82,37 @@ BEGIN
 						store
 				INTO fieldset_record
 				FROM fieldsets.fieldsets
-				WHERE token = field_name AND parent_token = field_name AND set_token = set_token;
+				WHERE token = field_name AND parent_token = field_name AND set_token = data_record.token;
 
 				field_value := json_record.value->>field_name;
 				SELECT fieldsets.get_field_data_type(fieldset_record.type::TEXT) INTO field_data_type;
 
 				CASE fieldset_record.store::TEXT
 					WHEN 'filter' THEN
-						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,updated,%s) VALUES(%s,%s, NOW(), %L::%s) ON CONFLICT ON CONSTRAINT %_%_id_pkey DO UPDATE', set_token, fieldset_record.type::TEXT, field_name, fieldset_id, parent_record.id, field_value, field_data_type, set_token, fieldset_record.type::TEXT);
+						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, updated, %s) VALUES(%s, %s, NOW(), %L::%s) ON CONFLICT ON CONSTRAINT %s_%s_id_pkey DO UPDATE SET %s = %L::%s, updated = NOW();', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, field_value, field_data_type, data_record.token, fieldset_record.store::TEXT, field_name, field_value, field_data_type);
 					WHEN 'lookup' THEN
-						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,%s) VALUES(%s,%s,%)';
+						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, %s) VALUES(%s, %s, %L::%s) ON CONFLICT ON CONSTRAINT %s_%s_id_pkey DO UPDATE SET %s = %L::%s;', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, field_value, field_data_type, data_record.token, fieldset_record.store::TEXT, field_name, field_value, field_data_type);
 					WHEN 'record' THEN
-						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,%s) VALUES(%s,%s,%)';
+						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, %s) VALUES(%s,%s, %L::%s);', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, field_value);
 					WHEN 'document' THEN
-						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,%s) VALUES(%s,%s,%)';
+						json_path := format('{%s}',field_name);
+						SELECT json_set(COALESCE(document, '{}'::JSONB), json_path, field_value) AS document INTO json_data FROM fieldsets.documents WHERE id = fieldset_record.id AND parent = fieldset_record.parent;
+						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,updated,document) VALUES(%s, %s, NOW(), %L::%s) ON CONFLICT ON CONSTRAINT %s_%s_id_pkey DO UPDATE SET document = %L::%s, updated = NOW();', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, json_data::TEXT, field_data_type, data_record.token, fieldset_record.store::TEXT, json_data::TEXT, field_data_type);
 					WHEN 'stream' THEN
-						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,%s) VALUES(%s,%s,%)';
-					WHEN 'sequence' THEN
-						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,%s) VALUES(%s,%s,%)';
+						stream_data := format('%s : %s', field_name, field_value);
+						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,data) VALUES(%s,%s, %L);', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, stream_data);
 					ELSE
-						insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,%s) VALUES(%s,%s,%)';
+						insert_stmt := '';
 				END CASE;
 
-				RAISE NOTICE '%', insert_stmt;
+				IF insert_stmt <> '' THEN
+					stores_insert_stmt := format(E'%s\n%s', stores_insert_stmt, insert_stmt);
+				END IF;
 			END LOOP;
 		END LOOP;
-		--UPDATE pipeline.imports SET imported = TRUE WHERE token = data_record.token AND type = 'schema' AND source = data_record.source AND priority = data_record.priority;
 	END LOOP;
+	EXECUTE stores_insert_stmt;
+	UPDATE pipeline.imports SET imported = TRUE WHERE type = 'data' AND imported = FALSE;
 END;
 $procedure$ LANGUAGE plpgsql;
 
