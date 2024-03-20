@@ -28,13 +28,17 @@ traperr() {
 # create_schemas: Create DB schemas
 ##
 create_schemas() {
+
     mkdir -p /var/lib/postgresql/pipeline
     mkdir -p /var/lib/postgresql/fieldsets
+    mkdir -p /var/lib/postgresql/plugins
     mkdir -p /var/lib/postgresql/documents
-    mkdir -p /var/lib/postgresql/files
     mkdir -p /var/lib/postgresql/filters
     mkdir -p /var/lib/postgresql/lookups
-    mkdir -p /var/lib/postgresql/plugins
+    mkdir -p /var/lib/postgresql/streams
+    mkdir -p /var/lib/postgresql/records
+    mkdir -p /var/lib/postgresql/sequences
+
     psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
         CREATE SCHEMA IF NOT EXISTS fieldsets;
         CREATE SCHEMA IF NOT EXISTS pipeline;

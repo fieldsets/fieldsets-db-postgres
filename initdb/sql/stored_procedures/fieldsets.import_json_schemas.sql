@@ -10,6 +10,7 @@ DECLARE
 	query_sql TEXT;
 	json_txt TEXT;
 	json_record RECORD;
+	enum_record RECORD;
 	insert_stmt TEXT := '';
 	insert_values TEXT := '';
 	insert_fieldset_values TEXT := '';
@@ -22,6 +23,7 @@ DECLARE
 	set_id BIGINT;
 	field_id BIGINT;
 	fieldset_id BIGINT;
+	fieldset_child_id BIGINT;
 	field_parent_id BIGINT;
 	set_parent_id BIGINT;
 	fieldset_parent_id BIGINT;
@@ -124,18 +126,30 @@ BEGIN
 			insert_values := '';
 			field_values_sql := '';
 
-			-- Create Our Dynamic SQL Field insert statement 
-			SELECT id INTO field_parent_id FROM imported_fields WHERE token = json_record.field_parent;
-			IF field_parent_id IS NULL THEN
-				SELECT nextval('fieldsets.field_id_seq') INTO field_parent_id;
-				INSERT INTO imported_fields(token,id) VALUES (json_record.field_parent, field_parent_id);
-			END IF;
+			-- Create Our Dynamic SQL Field insert statement
+			-- Fieds of type 'fieldset' have their parents reference the fieldset table. Switch the parent be self referencing.
+			CASE json_record.field_type
+				WHEN 'fieldset' THEN
+					SELECT id INTO field_id FROM imported_fields WHERE token = json_record.field_token;
+					IF field_id IS NULL THEN
+						SELECT nextval('fieldsets.field_id_seq') INTO field_id;
+						INSERT INTO imported_fields(token,id) VALUES (json_record.field_token, field_id);
+					END IF;
+					field_parent_id := field_id;
+					field_parent_token := json_record.field_token;
+				ELSE
+					SELECT id INTO field_parent_id FROM imported_fields WHERE token = json_record.field_parent;
+					IF field_parent_id IS NULL THEN
+						SELECT nextval('fieldsets.field_id_seq') INTO field_parent_id;
+						INSERT INTO imported_fields(token,id) VALUES (json_record.field_parent, field_parent_id);
+					END IF;
 
-			SELECT id INTO field_id FROM imported_fields WHERE token = json_record.field_token;
-			IF field_id IS NULL THEN
-				SELECT nextval('fieldsets.field_id_seq') INTO field_id;
-				INSERT INTO imported_fields(token,id) VALUES (json_record.field_token, field_id);
-			END IF;
+					SELECT id INTO field_id FROM imported_fields WHERE token = json_record.field_token;
+					IF field_id IS NULL THEN
+						SELECT nextval('fieldsets.field_id_seq') INTO field_id;
+						INSERT INTO imported_fields(token,id) VALUES (json_record.field_token, field_id);
+					END IF;
+			END CASE;
 
 			default_field_value := ROW(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 			IF json_record.field_default_value IS NOT NULL THEN
@@ -158,10 +172,37 @@ BEGIN
 
 			fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_id, json_record.field_token, json_record.field_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, json_record.field_type::TEXT, json_record.field_store::TEXT);
 			insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
+
+			-- Manage ENUM field types
+			IF json_record.field_type = 'enum' THEN
+				CASE jsonb_typeof(json_record.values)
+					WHEN 'string' THEN
+						FOR enum_record IN
+							SELECT value FROM json_array_elements_text(json_record.values)
+						LOOP
+							SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
+							fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, enum_record.value, json_record.field_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, json_record.field_type::TEXT, 'fieldset');
+							insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
+						END LOOP;
+
+					WHEN 'array' THEN
+						FOR enum_record IN
+							SELECT value FROM json_array_elements_text(json_record.values)
+						LOOP
+							SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
+							fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, enum_record.value, json_record.field_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, json_record.field_type::TEXT, 'fieldset');
+							insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
+						END LOOP;
+					ELSE
+
+				END CASE;
+			END IF;
+
 			insert_stmt := format('%s %s', insert_fieldsets_sql, insert_values);
 			insert_stmt := trim(TRAILING ',' FROM insert_stmt);
 
 			EXECUTE format('%s ON CONFLICT DO NOTHING;', insert_stmt);
+
 		END LOOP;
 
 		UPDATE pipeline.imports SET imported = TRUE WHERE token = fieldsets_record.token AND type = 'schema' AND source = fieldsets_record.source AND priority = fieldsets_record.priority;
