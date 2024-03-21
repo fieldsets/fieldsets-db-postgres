@@ -25,6 +25,7 @@ DECLARE
 	fieldset_id BIGINT;
 	fieldset_child_id BIGINT;
 	field_parent_id BIGINT;
+	field_parent_token TEXT;
 	set_parent_id BIGINT;
 	fieldset_parent_id BIGINT;
 BEGIN
@@ -139,6 +140,7 @@ BEGIN
 					field_parent_token := json_record.field_token;
 				ELSE
 					SELECT id INTO field_parent_id FROM imported_fields WHERE token = json_record.field_parent;
+					field_parent_token := json_record.field_parent;
 					IF field_parent_id IS NULL THEN
 						SELECT nextval('fieldsets.field_id_seq') INTO field_parent_id;
 						INSERT INTO imported_fields(token,id) VALUES (json_record.field_parent, field_parent_id);
@@ -156,7 +158,7 @@ BEGIN
 				default_field_value := fieldsets.create_field_value(json_record.field_default_value, json_record.field_type);
 			END IF;
 
-			field_values_sql := format('(%s, %L, %L, %L::FIELD_TYPE, %L::FIELD_VALUE, %L::STORE_TYPE, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type::TEXT, default_field_value::TEXT, json_record.field_store::TEXT, field_parent_id, json_record.field_parent, json_record.field_metadata::TEXT);
+			field_values_sql := format('(%s, %L, %L, %L::FIELD_TYPE, %L::FIELD_VALUE, %L::STORE_TYPE, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type::TEXT, default_field_value::TEXT, json_record.field_store::TEXT, field_parent_id, field_parent_token, json_record.field_metadata::TEXT);
 			insert_values := format(E'%s\n%s,', insert_values, field_values_sql);
 			insert_stmt := format('%s %s', insert_fields_sql, insert_values);
 			insert_stmt := trim(TRAILING ',' FROM insert_stmt);
@@ -175,16 +177,10 @@ BEGIN
 
 			-- Manage ENUM field types
 			IF json_record.field_type = 'enum' THEN
+
 				CASE jsonb_typeof(json_record.values)
 					WHEN 'string' THEN
-						FOR enum_record IN
-							SELECT value FROM json_array_elements_text(json_record.values)
-						LOOP
-							SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
-							fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, enum_record.value, json_record.field_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, json_record.field_type::TEXT, 'fieldset');
-							insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
-						END LOOP;
-
+						
 					WHEN 'array' THEN
 						FOR enum_record IN
 							SELECT value FROM json_array_elements_text(json_record.values)
@@ -192,7 +188,7 @@ BEGIN
 							SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
 							fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, enum_record.value, json_record.field_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, json_record.field_type::TEXT, 'fieldset');
 							insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
-						END LOOP;
+						END LOOP;h
 					ELSE
 
 				END CASE;
