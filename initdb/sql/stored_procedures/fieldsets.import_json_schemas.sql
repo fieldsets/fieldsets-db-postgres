@@ -31,6 +31,7 @@ DECLARE
 	fieldset_parent_id BIGINT;
 	fieldset_parent_token TEXT;
 	fieldset_label TEXT;
+	fieldset_token TEXT;
 BEGIN
 	DROP TABLE IF EXISTS imported_fields;
 	CREATE TEMPORARY TABLE imported_fields(
@@ -228,11 +229,12 @@ BEGIN
 								insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
 							ELSE
 								-- Create a custom label for token
-								fieldset_label := format('%s %s', enum_record.value, json_record.field_label);
+								SELECT trim(BOTH '"' FROM enum_record.value::TEXT) INTO fieldset_token;
+								fieldset_label := format('%s %s', fieldset_token, json_record.field_label);
 								fieldset_label := initcap(fieldset_label);
 								fieldset_label := trim(both ' ' from fieldset_label);
 								SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
-								fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, enum_record.value::TEXT, fieldset_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, 'fieldset', 'fieldset');
+								fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, fieldset_token, fieldset_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, 'fieldset', 'fieldset');
 								insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
 							END IF;
 						END LOOP;
