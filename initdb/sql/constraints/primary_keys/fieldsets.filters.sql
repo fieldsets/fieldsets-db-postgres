@@ -1,0 +1,1 @@
+ALTER TABLE fieldsets.filters ADD CONSTRAINT filters_id_pkey PRIMARY KEY (id,parent);

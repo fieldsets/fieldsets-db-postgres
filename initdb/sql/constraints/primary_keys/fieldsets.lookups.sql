@@ -1,0 +1,1 @@
+ALTER TABLE fieldsets.lookups ADD CONSTRAINT lookups_id_pkey PRIMARY KEY (id,parent);

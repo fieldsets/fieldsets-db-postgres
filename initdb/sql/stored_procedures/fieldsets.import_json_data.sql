@@ -54,11 +54,13 @@ BEGIN
 			SELECT id, token INTO set_record FROM fieldsets.sets WHERE token = fieldset_token;
 
 			SELECT id, token INTO field_record FROM fieldsets.fields WHERE token = fieldset_token;
-			SELECT id, token INTO fieldset_parent_record FROM fieldsets.fieldsets WHERE token = fieldset_parent_token AND set_token = data_record.token AND store = 'fieldset'::STORE_TYPE;
+			SELECT id, token INTO fieldset_parent_record FROM fieldsets.tokens WHERE token = fieldset_parent_token;
 
-			SELECT id INTO fieldset_id FROM fieldsets.fieldsets WHERE token = fieldset_token AND set_token = data_record.token AND store = 'fieldset'::STORE_TYPE;
+			SELECT id INTO fieldset_id FROM fieldsets.tokens WHERE token = fieldset_token;
 			IF fieldset_id IS NULL THEN
 				SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_id;
+				INSERT INTO fieldsets.tokens(id,token) VALUES (fieldset_id,fieldset_token) ON CONFLICT DO NOTHING;
+				COMMIT;
 				insert_stmt := format('INSERT INTO fieldsets.fieldsets(id, token, label, parent, parent_token, set_id, set_token, field_id, field_token, type, store) VALUES (%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE);', fieldset_id, fieldset_token, fieldset_label, fieldset_parent_record.id, fieldset_parent_token, set_parent_id, data_record.token, 2, 'fieldset', 'fieldset', 'fieldset');
 				EXECUTE insert_stmt;
 				COMMIT;

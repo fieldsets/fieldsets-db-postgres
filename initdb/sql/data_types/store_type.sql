@@ -5,7 +5,6 @@ BEGIN
     IF NOT type_exists THEN
         EXECUTE format(
             'CREATE TYPE STORE_TYPE AS ENUM (%L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L, %L);',
-            'none',
             'fieldset',
             'filter',
             'lookup',
@@ -17,7 +16,8 @@ BEGIN
             'file',
             'program',
             'custom',
-            'any'
+            'any',
+            'none'
         );
     END IF;
 END $$;
