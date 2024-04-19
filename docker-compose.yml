@@ -35,8 +35,8 @@ services:
             POSTGRES_WRITER_ROLE_PASSWORD: ${POSTGRES_WRITER_ROLE_PASSWORD:-}
             POSTGRES_TRIGGER_ROLE: ${POSTGRES_TRIGGER_ROLE:-fieldsets_trigger_role}
             POSTGRES_TRIGGER_ROLE_PASSWORD: ${POSTGRES_TRIGGER_ROLE_PASSWORD:-}
-            DEBUG_MODE: ${DEBUG_MODE:-true}
-            LOGGING_ENABLED: ${LOGGING_ENABLED:-false}
+            ENABLE_DEBUG_MODE: ${ENABLE_DEBUG_MODE:-true}
+            ENABLE_LOGGING: ${ENABLE_LOGGING:-false}
         stop_signal: SIGTERM
         stop_grace_period: 1m30s
         oom_kill_disable: true
@@ -57,6 +57,13 @@ services:
             - postgres-logs:/var/lib/postgresql/logs
             - postgres-archive:/var/lib/postgresql/archive
             - postgres-pipeline:/var/lib/postgresql/pipeline
+            - postgres-fieldsets:/var/lib/postgresql/fieldsets
+            - postgres-filters:/var/lib/postgresql/filters
+            - postgres-records:/var/lib/postgresql/records
+            - postgres-documents:/var/lib/postgresql/documents
+            - postgres-lookups:/var/lib/postgresql/lookups
+            - postgres-streams:/var/lib/postgresql/streams
+            - postgres-sequences:/var/lib/postgresql/sequences
 volumes:
     postgres-data:
         driver: local
@@ -70,3 +77,24 @@ volumes:
     postgres-pipeline:
         driver: local
         name: fieldsets-db-pipeline
+    postgres-fieldsets:
+        driver: local
+        name: fieldsets-db-fieldsets
+    postgres-filters:
+        driver: local
+        name: fieldsets-db-filters
+    postgres-records:
+        driver: local
+        name: fieldsets-db-records
+    postgres-documents:
+        driver: local
+        name: fieldsets-db-documents
+    postgres-lookups:
+        driver: local
+        name: fieldsets-db-lookups
+    postgres-streams:
+        driver: local
+        name: fieldsets-db-streams
+    postgres-sequences:
+        driver: local
+        name: fieldsets-db-sequences

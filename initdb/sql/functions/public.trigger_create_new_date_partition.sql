@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION public.trigger_create_new_date_partition() RETURNS tr
     partition_table_name TEXT;
     range_start TEXT;
     range_stop TEXT;
-  BEGIN 
+  BEGIN
     SELECT EXTRACT(MONTH FROM NEW.created) INTO partition_month;
     SELECT EXTRACT(YEAR FROM NEW.created) INTO partition_year;
     IF partition_month < 10 THEN
@@ -28,7 +28,7 @@ CREATE OR REPLACE FUNCTION public.trigger_create_new_date_partition() RETURNS tr
     BEGIN
   	  create_tbl_sql := format('CREATE TABLE %I.%I (LIKE %I.%I INCLUDING ALL) TABLESPACE %I;', db_schema, partition_table_name, db_schema, parent_table_name, partition_tablespace);
       EXECUTE create_tbl_sql;
-      
+
       -- Asynchronously attach partition with scheduled cronjob.
       cron_job_token := format('attach_partition%s', partition_table_name);
       cron_job_sql := format('CALL public.attach_date_partition(%L,%L,%L,%L,%L);', db_schema, parent_table_name, partition_table_name, partition_year, partition_month);
@@ -36,7 +36,7 @@ CREATE OR REPLACE FUNCTION public.trigger_create_new_date_partition() RETURNS tr
     EXCEPTION WHEN duplicate_table THEN
       NULL;
     END;
-    
+
     RETURN NEW;
   END;
 $function$ LANGUAGE plpgsql;

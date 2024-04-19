@@ -13,7 +13,7 @@ CREATE OR REPLACE PROCEDURE public.trigger_10_forward_default_partition_data(db_
 		DROP TRIGGER IF EXISTS trigger_10_forward_default_partition_data_%s ON %s.__%s_default;
 		CREATE TRIGGER trigger_10_forward_default_partition_data_%s
 		BEFORE INSERT ON %s.__%s_default
-		FOR EACH ROW 
+		FOR EACH ROW
 		EXECUTE FUNCTION public.trigger_move_default_data_to_date_partition(%L, %L);
 
 		COMMENT ON TRIGGER trigger_10_forward_default_partition_data_%s ON %s.__%s_default IS '

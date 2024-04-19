@@ -1,0 +1,1 @@
+CREATE INDEX import_data_idx ON pipeline.imports USING gin (data);

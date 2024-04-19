@@ -1,0 +1,1 @@
+ALTER TABLE fieldsets.documents ADD CONSTRAINT documents_id_pkey PRIMARY KEY (id,parent);

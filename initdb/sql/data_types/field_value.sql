@@ -18,6 +18,7 @@ BEGIN
                 %I      TSVECTOR,
                 %I      UUID,
                 %I		JSONB,
+                %I      TEXT,
                 %I		JSONB,
                 %I      JSONB
             );',
@@ -35,6 +36,7 @@ BEGIN
             'search',
             'uuid',
             'function',
+            'enum',
             'custom',
             'any'
         );
