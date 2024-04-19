@@ -10,7 +10,7 @@ DECLARE
 	query_sql TEXT;
 	json_txt TEXT;
 	json_record RECORD;
-	enum_record RECORD;
+	values_record RECORD;
 	object_record RECORD;
 	insert_stmt TEXT := '';
 	insert_values TEXT := '';
@@ -125,7 +125,7 @@ BEGIN
 			field_values_sql := '';
 
 			-- Create Our Dynamic SQL Field insert statement
-			-- Fieds of type 'fieldset' & 'enum' have their parents reference the fieldset table. Switch the parent be self referencing.
+			-- Fields of type 'fieldset' & 'enum' have their parents reference the fieldset table. Switch the parent be self referencing.
 			CASE json_record.field_type
 				WHEN 'fieldset' THEN
 					SELECT id INTO field_id FROM imported_fields WHERE token = json_record.field_token;
@@ -183,7 +183,11 @@ BEGIN
 			END IF;
 			SELECT id INTO set_id FROM imported_sets WHERE token = json_record.set_token;
 			SELECT id INTO fieldset_parent_id FROM fieldsets.tokens WHERE token = json_record.field_parent;
+
 			IF fieldset_parent_id IS NULL THEN
+				fieldset_parent_id := fieldset_id;
+				fieldset_parent_token := json_record.field_token;
+			ELSIF json_record.field_type = 'fieldset' AND json_record.field_store <> 'fieldset' THEN
 				fieldset_parent_id := fieldset_id;
 				fieldset_parent_token := json_record.field_token;
 			ELSE
@@ -206,28 +210,33 @@ BEGIN
 			insert_stmt := '';
 			insert_values := '';
 			fieldset_values_sql := '';
-			IF json_record.field_type = 'enum' THEN
+			IF (json_record.field_type = 'enum' OR (json_record.field_type = 'fieldset' AND json_record.field_store <> 'fieldset'))THEN
 				CASE jsonb_typeof(json_record.field_values)
 					WHEN 'string' THEN
-						FOR enum_record IN
-							SELECT id,token,label FROM fieldsets.fieldsets WHERE parent_token = json_record.field_values
+						FOR values_record IN
+							SELECT id,token,label FROM fieldsets.fieldsets WHERE parent_token = json_record.field_values::TEXT
 						LOOP
 							SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
-							fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, enum_record.token, enum_record.label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, 'fieldset', 'fieldseet');
+							fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, values_record.token, values_record.label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, 'fieldset', 'fieldset');
 							insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
 							INSERT INTO fieldsets.tokens(id,token) VALUES
-								(fieldset_child_id,enum_record.token)
+								(fieldset_child_id,values_record.token)
 							ON CONFLICT DO NOTHING;
 							COMMIT;
 						END LOOP;
 					WHEN 'array' THEN
-						FOR enum_record IN
+						FOR values_record IN
 							SELECT * FROM jsonb_array_elements(json_record.field_values)
 						LOOP
-							IF json_typeof(to_json(enum_record.value::JSON)) = 'object' THEN
-								SELECT * INTO object_record FROM json_each_text(to_json(enum_record.value::JSON));
+							IF json_typeof(to_json(values_record.value::JSON)) = 'object' THEN
+								SELECT * INTO object_record FROM json_each_text(to_json(values_record.value::JSON));
 								fieldset_label := object_record.value;
-								SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
+								SELECT id INTO fieldset_child_id FROM fieldsets.tokens WHERE token = object_record.key;
+								IF fieldset_child_id IS NULL THEN
+									SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
+									INSERT INTO fieldsets.tokens(id,token) VALUES (fieldset_child_id, object_record.key) ON CONFLICT DO NOTHING;
+									COMMIT;
+								END IF;
 								fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, object_record.key, fieldset_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, 'fieldset', 'fieldset');
 								insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
 								INSERT INTO fieldsets.tokens(id,token) VALUES
@@ -236,11 +245,16 @@ BEGIN
 								COMMIT;
 							ELSE
 								-- Create a custom label for token
-								SELECT trim(BOTH '"' FROM enum_record.value::TEXT) INTO fieldset_token;
+								SELECT trim(BOTH '"' FROM values_record.value::TEXT) INTO fieldset_token;
 								fieldset_label := format('%s %s', fieldset_token, json_record.field_label);
 								fieldset_label := initcap(fieldset_label);
 								fieldset_label := trim(both ' ' from fieldset_label);
-								SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
+								SELECT id INTO fieldset_child_id FROM fieldsets.tokens WHERE token = fieldset_token;
+								IF fieldset_child_id IS NULL THEN
+									SELECT nextval('fieldsets.fieldset_id_seq') INTO fieldset_child_id;
+									INSERT INTO fieldsets.tokens(id,token) VALUES (fieldset_child_id, fieldset_token) ON CONFLICT DO NOTHING;
+									COMMIT;
+								END IF;
 								fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_child_id, fieldset_token, fieldset_label, fieldset_id, json_record.field_token, set_id, json_record.set_token, field_id, json_record.field_token, 'fieldset', 'fieldset');
 								insert_values := format(E'%s\n%s,', insert_values, fieldset_values_sql);
 								INSERT INTO fieldsets.tokens(id,token) VALUES

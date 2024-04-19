@@ -4,5 +4,5 @@ INSERT INTO fieldsets.fieldsets (id, token, label, parent, parent_token, set_id,
     (1, 'fieldset', 'Fieldset', 1, 'fieldset', 1, 'fieldset', 1, 'fieldset', 'fieldset', 'fieldset')
 ON CONFLICT DO NOTHING;
 
--- Set starting set val at 1000.
+-- Set starting fieldset id val at 1000.
 SELECT setval('fieldsets.fieldset_id_seq', 1000, false);

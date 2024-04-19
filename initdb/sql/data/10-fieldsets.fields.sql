@@ -21,5 +21,5 @@ INSERT INTO fieldsets.fields (id, token, label, type, default_value, store, pare
     (19, 'any', 'Any Field', 'any', NULL, 'any', 1, 'field', '{}'::JSONB)
 ON CONFLICT DO NOTHING;
 
--- Set starting set val at 100.
+-- Set starting fields id val at 100.
 SELECT setval('fieldsets.field_id_seq', 100, false);
