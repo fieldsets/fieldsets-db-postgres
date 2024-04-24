@@ -95,22 +95,36 @@ BEGIN
 
 				field_value := json_record.value->>field_name;
 
-				IF fieldset_record.type::TEXT = 'fieldset' AND fieldset_record.store::TEXT <> 'fieldset' AND json_field_data_type = 'string' THEN
-					SELECT id INTO field_value FROM fieldsets.tokens WHERE token = field_name;
-				END IF;
-
-				RAISE NOTICE 'RAW VALUE: (FIELD %: %)', field_name, field_value;
+				--RAISE NOTICE 'RAW VALUE: (FIELD %: %)', field_name, field_value;
 				escaped_field_value := format($ESCAPED_JSON$"%s"$ESCAPED_JSON$,field_value::TEXT);
 				BEGIN
 					SELECT jsonb_typeof(field_value::JSONB) INTO json_field_data_type;
 				EXCEPTION WHEN invalid_text_representation OR numeric_value_out_of_range THEN
 					SELECT jsonb_typeof(escaped_field_value::JSONB) INTO json_field_data_type;
 				END;
+
+				-- If of type fieldset, match the token to the id and update variables.
+				IF fieldset_record.type::TEXT = 'fieldset' AND fieldset_record.store::TEXT <> 'fieldset' AND json_field_data_type = 'string' THEN
+					SELECT id INTO field_value FROM fieldsets.tokens WHERE token = field_name;
+					escaped_field_value := format($ESCAPED_JSON$"%s"$ESCAPED_JSON$,field_value::TEXT);
+					BEGIN
+						SELECT jsonb_typeof(field_value::JSONB) INTO json_field_data_type;
+					EXCEPTION WHEN invalid_text_representation OR numeric_value_out_of_range THEN
+						SELECT jsonb_typeof(escaped_field_value::JSONB) INTO json_field_data_type;
+					END;
+				END IF;
+
 				SELECT fieldsets.get_field_data_type(fieldset_record.type::TEXT) INTO field_data_type;
 
-				RAISE NOTICE 'IMPORT DATA: (FIELD %: %)', field_name, field_value;
-				RAISE NOTICE 'IMPORT DATA TYPES: JSON TYPE - %, SQL TYPE - %)', json_field_data_type, field_data_type;
+				--RAISE NOTICE 'IMPORT DATA: (FIELD %: %)', field_name, field_value;
+				--RAISE NOTICE 'IMPORT DATA TYPES: JSON TYPE - %, SQL TYPE - %)', json_field_data_type, field_data_type;
 				IF ((field_value IS NOT NULL) AND (length(field_value::TEXT) > 0)) THEN
+
+					-- Strip unwanted chars from any numbers
+					IF ((field_data_type = 'BIGINT') OR (field_data_type = 'DECIMAL')) THEN
+						SELECT replace(field_value::TEXT, ',', '') INTO field_value;
+					END IF;
+
 					CASE fieldset_record.store::TEXT
 						WHEN 'filter' THEN
 							insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, updated, %s) VALUES(%s, %s, NOW(), %L::%s) ON CONFLICT ON CONSTRAINT %s_%s_id_pkey DO UPDATE SET %s = %L::%s, updated = NOW();', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, field_value, field_data_type, data_record.token, fieldset_record.store::TEXT, field_name, field_value, field_data_type);
@@ -145,7 +159,7 @@ BEGIN
 									SELECT * FROM jsonb_array_elements(jsonb_strip_nulls(field_value::JSONB))
 								LOOP
 									IF json_field_value IS NOT NULL THEN
-										RAISE NOTICE 'RECORD ARRAY VALUE: %', json_field_value;
+										--RAISE NOTICE 'RECORD ARRAY VALUE: %', json_field_value;
 										insert_stmt := format(E'%s\n(%s,%s, %L::%s),', insert_stmt, fieldset_id, fieldset_parent_record.id, json_field_value, field_data_type);
 										json_array_count := json_array_count + 1;
 									END IF;
