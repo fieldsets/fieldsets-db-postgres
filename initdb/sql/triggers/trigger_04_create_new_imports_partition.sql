@@ -30,9 +30,9 @@ CREATE OR REPLACE PROCEDURE pipeline.trigger_04_create_new_imports_partition(db_
   END;
 $procedure$ LANGUAGE plpgsql;
 
-COMMENT ON PROCEDURE public.trigger_05_create_new_date_partition (TEXT, TEXT, TEXT) IS 
+COMMENT ON PROCEDURE pipeline.trigger_04_create_new_imports_partition (TEXT, TEXT, TEXT) IS 
 '/**
- * trigger_05_create_new_date_partition: triggered before insert into given table. Create a new partition for the month of the current year if it does not exist using the `created` field.
+ * trigger_04_create_new_imports_partition: triggered before insert into pipeline.imports table. Create a new partition for the token and create date partitions using the month of the current year if it does not exist using the `created` field.
  *
  * @param TEXT: db_schema
  * @param TEXT: table_name
