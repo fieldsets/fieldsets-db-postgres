@@ -138,18 +138,18 @@ BEGIN
 									IF json_field_data_type <> 'null' THEN
 										IF json_field_data_type = 'object' THEN
 											SELECT array_to_string(array_agg(key),',') AS keys, concat($$'$$, array_to_string(array_agg(value),$$','$$), $$'$$) AS values INTO json_fields FROM jsonb_each_text(jsonb_strip_nulls(json_field_value::JSONB));
-											insert_stmt := format(E'%s\nINSERT INTO fieldsets.%s_%s(id, parent, %s) VALUES (%s, %s, %s);', insert_stmt, data_record.token, fieldset_record.store::TEXT, json_fields.keys, fieldset_id, fieldset_parent_record.id, json_fields.values);
+											insert_stmt := format(E'%s\nINSERT INTO fieldsets.%s_%s(id, parent, type, value) VALUES (%s, %s, %s);', insert_stmt, data_record.token, fieldset_record.store::TEXT, fieldset_id, fieldset_parent_record.id, json_fields.values);
 										ELSE
 											SELECT trim(BOTH '"' FROM json_field_value::TEXT) INTO trimmed_field_value;
-											insert_stmt := format(E'%s\nINSERT INTO fieldsets.%s_%s(id, parent, %s) VALUES(%s, %s, %L::%s);', insert_stmt, data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, trimmed_field_value, field_data_type);
+											insert_stmt := format(E'%s\nINSERT INTO fieldsets.%s_%s(id, parent, type, value) VALUES(%s, %s, %L::%s);', insert_stmt, data_record.token, fieldset_record.store::TEXT, fieldset_id, fieldset_parent_record.id, trimmed_field_value, field_data_type);
 										END IF;
 									END IF;
 								END LOOP;
 							ELSIF json_field_data_type = 'string' THEN
 								SELECT trim(BOTH '"' FROM field_value::TEXT) INTO trimmed_field_value;
-								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, %s) VALUES(%s, %s, %L::%s);', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, trimmed_field_value, field_data_type);
+								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, type, value) VALUES(%s, %s, %L::%s);', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, trimmed_field_value, field_data_type);
 							ELSE
-								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, %s) VALUES(%s, %s, %L::%s);', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, field_value, field_data_type);
+								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, type, value) VALUES(%s, %s, %L::%s);', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, field_value, field_data_type);
 							END IF;
 						WHEN 'record' THEN
 							IF json_field_data_type = 'array' THEN

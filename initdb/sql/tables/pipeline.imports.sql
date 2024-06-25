@@ -16,7 +16,7 @@ TABLESPACE pipeline;
 CREATE TABLE IF NOT EXISTS pipeline.__imports_complete PARTITION OF pipeline.imports
 FOR VALUES IN (TRUE)
 PARTITION BY LIST(token)
-TABLESPACE fieldsets;
+TABLESPACE pipeline;
 
 CREATE TABLE IF NOT EXISTS pipeline.__imports_default PARTITION OF pipeline.imports DEFAULT
-TABLESPACE fieldsets;
+TABLESPACE pipeline;
