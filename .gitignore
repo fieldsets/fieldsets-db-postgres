@@ -8,6 +8,9 @@
 ./plugins/*
 ./plugins
 
+./data/*
+./data
+
 *.crt
 *.pem
 *_rsa
