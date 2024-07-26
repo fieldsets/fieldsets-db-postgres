@@ -7,6 +7,16 @@ CREATE TABLE IF NOT EXISTS pipeline.imports(
     type TEXT NULL,
     priority INT NULL,
     data JSONB NULL,
-    imported BOOLEAN DEFAULT FALSE
-)
+    imported BOOLEAN DEFAULT FALSE,
+    created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated TIMESTAMPTZ NOT NULL DEFAULT NOW()
+) PARTITION BY LIST(imported)
+TABLESPACE pipeline;
+
+CREATE TABLE IF NOT EXISTS pipeline.__imports_complete PARTITION OF pipeline.imports
+FOR VALUES IN (TRUE)
+PARTITION BY LIST(token)
+TABLESPACE pipeline;
+
+CREATE TABLE IF NOT EXISTS pipeline.__imports_default PARTITION OF pipeline.imports DEFAULT
 TABLESPACE pipeline;

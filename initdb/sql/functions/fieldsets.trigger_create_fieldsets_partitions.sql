@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION fieldsets.trigger_create_fieldsets_partitions() RETUR
     IF partition_status IS NULL THEN
       create_tbl_sql := format('CREATE TABLE IF NOT EXISTS fieldsets.%I PARTITION OF fieldsets.fieldsets FOR VALUES IN (%s) PARTITION BY LIST(store) TABLESPACE fieldsets;', parent_table_name, NEW.parent::TEXT);
       EXECUTE create_tbl_sql;
-      create_tbl_sql := format('CALL fieldsets.create_store_partitions(%L, %L);', parent_table_name, 'fieldset');
+      create_tbl_sql := format('CALL fieldsets.create_store_partitions(%L, %L, %L);', parent_table_name, 'fieldset', 'fieldsets');
     END IF;
 
     -- Test Set existance
@@ -26,7 +26,7 @@ CREATE OR REPLACE FUNCTION fieldsets.trigger_create_fieldsets_partitions() RETUR
     IF partition_status IS NULL THEN
       create_tbl_sql := format('CREATE TABLE IF NOT EXISTS fieldsets.%I PARTITION OF fieldsets.fieldsets FOR VALUES IN (%s) PARTITION BY LIST(store) TABLESPACE fieldsets;', partition_table_name, NEW.id::TEXT);
       EXECUTE create_tbl_sql;
-      create_tbl_sql := format('CALL fieldsets.create_store_partitions(%L, %L);', partition_table_name, 'fieldset');
+      create_tbl_sql := format('CALL fieldsets.create_store_partitions(%L, %L, %L);', partition_table_name, 'fieldset', 'fieldsets');
       EXECUTE create_tbl_sql;
     END IF;
     RETURN NEW;

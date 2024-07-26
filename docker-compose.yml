@@ -45,14 +45,14 @@ services:
                 limits:
                     memory: ${SYSTEM_MEMORY:-8G}
         volumes:
-            - ${POSTGRES_CONFIG_PATH:-./}initdb/sql/:/fieldsets-sql/
             - ${POSTGRES_CONFIG_PATH:-./}postgresql.conf:/etc/postgresql/postgresql.conf
             - ${POSTGRES_CONFIG_PATH:-./}cron.conf:/etc/postgresql/conf.d/cron.conf
             - ${POSTGRES_CONFIG_PATH:-./}initdb/:/docker-entrypoint-initdb.d/
-            - ${FIELDSETS_PATH:-./}lib/:/fieldsets-lib/
-            - ${FIELDSETS_PATH:-./}plugins/:/fieldsets-plugins/
-            - ${FIELDSETS_PATH:-./}data/:/fieldsets-data/
-            - ${FIELDSETS_PATH:-./}src/:/fieldsets/
+            - ${POSTGRES_CONFIG_PATH:-./}initdb/sql/:/usr/local/fieldsets/sql/
+            - ${POSTGRES_CONFIG_PATH:-./}lib/:/usr/local/fieldsets/lib/
+            - ${POSTGRES_CONFIG_PATH:-./}plugins/:/usr/local/fieldsets/plugins/
+            - ${POSTGRES_CONFIG_PATH:-./}data/:/usr/local/fieldsets/data/
+            - ${POSTGRES_CONFIG_PATH:-./}src/:/usr/local/fieldsets/apps/
             - postgres-data:/var/lib/postgresql/data
             - postgres-logs:/var/lib/postgresql/logs
             - postgres-archive:/var/lib/postgresql/archive

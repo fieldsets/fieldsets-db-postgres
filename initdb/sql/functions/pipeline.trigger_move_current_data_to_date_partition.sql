@@ -28,7 +28,7 @@ CREATE OR REPLACE FUNCTION pipeline.trigger_move_current_data_to_date_partition(
   END;
 $function$ LANGUAGE plpgsql;
 
-COMMENT ON FUNCTION pipeline.trigger_move_current_data_to_date_partition () IS 
+COMMENT ON FUNCTION pipeline.trigger_move_current_data_to_date_partition () IS
 '/**
  * trigger_move_current_data_to_date_partition: triggered before insert into default partition. When an insert happens on the default it is because the partition didn''t exist at the time. Move it as it has been created.
  * @depends TRIGGER: create_new_date_partition
