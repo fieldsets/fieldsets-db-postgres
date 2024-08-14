@@ -5,10 +5,10 @@
  * @return FIELD_VALUE: ROW(BIGINT,TEXT,BIGINT,DECIMAL,JSONB,TEXT[],DECIMAL[],JSONB[],BOOLEAN,DATE,TIMESTAMP,TSVECTOR,UUID,JSONB,TEXT,JSONB,JSONB)
  **/
 CREATE OR REPLACE FUNCTION fieldsets.create_field_value(field_value anyelement, field_type TEXT)
-RETURNS RECORD
+RETURNS FIELD_VALUE
 AS $function$
     DECLARE
-        return_result RECORD;
+        return_result FIELD_VALUE;
     BEGIN
         CASE field_type
             WHEN 'fieldset' THEN
