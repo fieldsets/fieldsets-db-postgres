@@ -30,6 +30,8 @@ DECLARE
 	fieldset_token TEXT;
 	fieldset_parent_id BIGINT;
 	fieldset_label TEXT;
+	fieldset_created_date TEXT;
+	fieldset_created_timestamp TIMESTAMPTZ;
 	stream_data TEXT;
 	stack TEXT;
 BEGIN
@@ -56,6 +58,14 @@ BEGIN
 			fieldset_parent_token := json_record.value->>'parent';
 			fieldset_token := json_record.value->>'token';
 			fieldset_label := json_record.value->>'label';
+			-- Expecting ISO 8601 String Format
+			fieldset_created_date := json_record.value->>'created';
+			IF fieldset_created_date IS NULL THEN
+				fieldset_created_timestamp := NOW();
+			ELSE
+				fieldset_created_timestamp := fieldset_created_date::TIMESTAMPTZ;
+			END IF;
+
 			-- Make sure sets and their partition tables are created.
 			SELECT id, token INTO set_parent_record FROM fieldsets.sets WHERE token = fieldset_parent_token;
 
@@ -128,7 +138,7 @@ BEGIN
 
 					CASE fieldset_record.store::TEXT
 						WHEN 'filter' THEN
-							insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, updated, %s) VALUES(%s, %s, NOW(), %L::%s) ON CONFLICT ON CONSTRAINT %s_%s_id_pkey DO UPDATE SET %s = %L::%s, updated = NOW();', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, field_value, field_data_type, data_record.token, fieldset_record.store::TEXT, field_name, field_value, field_data_type);
+							insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, created, updated, %s) VALUES(%s, %s, %L, NOW(), %L::%s) ON CONFLICT ON CONSTRAINT %s_%s_id_pkey DO UPDATE SET %s = %L::%s, updated = NOW();', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, fieldset_created_timestamp, field_value, field_data_type, data_record.token, fieldset_record.store::TEXT, field_name, field_value, field_data_type);
 						WHEN 'lookup' THEN
 							IF json_field_data_type = 'array' THEN
 								json_array_count := 0;
@@ -144,16 +154,16 @@ BEGIN
 											SELECT trim(BOTH '"' FROM json_field_value::TEXT) INTO trimmed_field_value;
 											SELECT (fieldsets.create_field_value(trimmed_field_value, fieldset_record.type::TEXT)).* INTO typed_field_value;
 										END IF;
-										insert_stmt := format(E'%s\nINSERT INTO fieldsets.%s_%s(id, parent, field_id, type, value) VALUES (%s, %s, %s, %L, %L::FIELD_VALUE);', insert_stmt, data_record.token, fieldset_record.store::TEXT, fieldset_id, fieldset_parent_record.id, fieldset_record.field_id, fieldset_record.type, typed_field_value);
+										insert_stmt := format(E'%s\nINSERT INTO fieldsets.%s_%s(id, parent, field_id, type, value) VALUES (%s, %s, %s, %L, %L::FIELD_VALUE) ON CONFLICT ON CONSTRAINT %s_%s_pkey DO UPDATE SET value = %L::FIELD_VALUE;', insert_stmt, data_record.token, fieldset_record.store::TEXT, fieldset_id, fieldset_parent_record.id, fieldset_record.field_id, fieldset_record.type, typed_field_value, data_record.token, fieldset_record.store::TEXT, typed_field_value);
 									END IF;
 								END LOOP;
 							ELSIF json_field_data_type = 'string' THEN
 								SELECT trim(BOTH '"' FROM field_value::TEXT) INTO trimmed_field_value;
 								SELECT (fieldsets.create_field_value(trimmed_field_value, fieldset_record.type::TEXT)).* INTO typed_field_value;
-								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, field_id, type, value) VALUES(%s, %s, %s, %L::FIELD_TYPE, %L::FIELD_VALUE);', data_record.token, fieldset_record.store::TEXT, fieldset_id::TEXT, fieldset_parent_record.id::TEXT, fieldset_record.field_id::TEXT, fieldset_record.type::TEXT, typed_field_value);
+								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, field_id, type, value) VALUES(%s, %s, %s, %L::FIELD_TYPE, %L::FIELD_VALUE) ON CONFLICT ON CONSTRAINT %s_%s_pkey DO UPDATE SET value = %L::FIELD_VALUE;', data_record.token, fieldset_record.store::TEXT, fieldset_id::TEXT, fieldset_parent_record.id::TEXT, fieldset_record.field_id::TEXT, fieldset_record.type::TEXT, typed_field_value, data_record.token, fieldset_record.store::TEXT, typed_field_value);
 							ELSE
 								SELECT (fieldsets.create_field_value(field_value, fieldset_record.type::TEXT)).* INTO typed_field_value;
-								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, field_id, type, value) VALUES(%s, %s, %s, %L::FIELD_TYPE, %L::FIELD_VALUE);', data_record.token, fieldset_record.store::TEXT, fieldset_id::TEXT, fieldset_parent_record.id::TEXT, fieldset_record.field_id::TEXT, fieldset_record.type::TEXT, typed_field_value);
+								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, field_id, type, value) VALUES(%s, %s, %s, %L::FIELD_TYPE, %L::FIELD_VALUE) ON CONFLICT ON CONSTRAINT %s_%s_pkey DO UPDATE SET value = %L::FIELD_VALUE;', data_record.token, fieldset_record.store::TEXT, fieldset_id::TEXT, fieldset_parent_record.id::TEXT, fieldset_record.field_id::TEXT, fieldset_record.type::TEXT, typed_field_value, data_record.token, fieldset_record.store::TEXT, typed_field_value);
 							END IF;
 						WHEN 'record' THEN
 							IF json_field_data_type = 'array' THEN
@@ -175,7 +185,7 @@ BEGIN
 									insert_stmt := '';
 								END IF;
 							ELSE
-								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, %s) VALUES(%s,%s, %L::%s);', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, field_value, field_data_type);
+								insert_stmt := format('INSERT INTO fieldsets.%s_%s(id, parent, created, %s) VALUES(%s, %s, %L, %L::%s);', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, fieldset_created_timestamp, field_value, field_data_type);
 							END IF;
 						WHEN 'document' THEN
 							json_path := format('{%s}',field_name);
@@ -185,7 +195,7 @@ BEGIN
 							ELSE
 								json_data := jsonb_set(COALESCE(json_data, '{}'::JSONB), json_path, field_value::JSONB);
 							END IF;
-							insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,updated,document) VALUES(%s, %s, NOW(), $ESCAPED_JSON$%s$ESCAPED_JSON$::JSONB) ON CONFLICT ON CONSTRAINT %s_%s_id_pkey DO UPDATE SET document = $ESCAPED_JSON$%s$ESCAPED_JSON$::JSONB, updated = NOW();', data_record.token, fieldset_record.store::TEXT, fieldset_id, fieldset_parent_record.id, json_data, data_record.token, fieldset_record.store::TEXT, json_data);
+							insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,created,updated,document) VALUES(%s, %s, %L, NOW(), $ESCAPED_JSON$%s$ESCAPED_JSON$::JSONB) ON CONFLICT ON CONSTRAINT %s_%s_id_pkey DO UPDATE SET document = (fieldsets.%s_%s.document::JSONB || $ESCAPED_JSON$%s$ESCAPED_JSON$::JSONB), updated = NOW();', data_record.token, fieldset_record.store::TEXT, fieldset_id, fieldset_parent_record.id, fieldset_created_timestamp, json_data, data_record.token, fieldset_record.store::TEXT, data_record.token, fieldset_record.store::TEXT, json_data);
 						WHEN 'stream' THEN
 							stream_data := format('%s : %s', field_name, field_value);
 							insert_stmt := format('INSERT INTO fieldsets.%s_%s(id,parent,data) VALUES(%s,%s, %L);', data_record.token, fieldset_record.store::TEXT, field_name, fieldset_id, fieldset_parent_record.id, stream_data);
