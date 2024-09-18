@@ -115,7 +115,7 @@ BEGIN
 				END;
 
 				-- If of type fieldset, match the token to the id and update variables.
-				IF fieldset_record.type::TEXT = 'fieldset' AND fieldset_record.store::TEXT <> 'fieldset' AND json_field_data_type = 'string' THEN
+				IF ((fieldset_record.type::TEXT = 'fieldset' OR fieldset_record.type::TEXT = 'enum') AND fieldset_record.store::TEXT <> 'fieldset' AND json_field_data_type = 'string') THEN
 					SELECT id INTO field_value FROM fieldsets.tokens WHERE token = field_name;
 					escaped_field_value := format($ESCAPED_JSON$"%s"$ESCAPED_JSON$,field_value::TEXT);
 					BEGIN
