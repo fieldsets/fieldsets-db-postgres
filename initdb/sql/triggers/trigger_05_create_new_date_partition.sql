@@ -15,7 +15,7 @@ CREATE OR REPLACE PROCEDURE public.trigger_05_create_new_date_partition(db_schem
         DROP TRIGGER IF EXISTS trigger_05_create_new_date_partition_%s ON %s.%s;
 		CREATE TRIGGER trigger_05_create_new_date_partition_%s
 		BEFORE INSERT ON %s.%s
-		FOR EACH ROW 
+		FOR EACH ROW
 		EXECUTE FUNCTION public.trigger_create_new_date_partition(%L, %L, %L);
 
 		COMMENT ON TRIGGER trigger_05_create_new_date_partition_%s ON %s.%s IS '

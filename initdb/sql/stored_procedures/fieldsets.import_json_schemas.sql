@@ -103,7 +103,7 @@ BEGIN
 				INSERT INTO fieldsets.tokens(id,token) VALUES (fieldset_id, set_record.token) ON CONFLICT DO NOTHING;
 			END IF;
 
-			fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_id, set_record.token, set_record.label, fieldset_parent_id, set_record.parent, set_id, set_record.token, 2, 'fieldset', 'fieldset', 'fieldset');
+			fieldset_values_sql := format('(%s, %L, %L, %s, %L, %s, %L, %s, %L, %L::FIELD_TYPE, %L::STORE_TYPE)', fieldset_id, set_record.token, set_record.label, fieldset_parent_id, set_record.parent, set_id, set_record.token, 0, 'none', 'fieldset', 'fieldset');
 			insert_fieldset_values := format(E'%s\n%s,', insert_fieldset_values, fieldset_values_sql);
 		END LOOP;
 
