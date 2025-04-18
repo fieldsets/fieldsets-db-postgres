@@ -1,5 +1,5 @@
 ARG POSTGRES_VERSION
-FROM postgres:${POSTGRES_VERSION:-15}-bullseye
+FROM postgres:${POSTGRES_VERSION:-15}-bookworm
 
 ENV DEBIAN_FRONTEND='noninteractive'
 ARG POSTGRES_VERSION
@@ -74,7 +74,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     bash /root/.local/bin/root-certs.sh /tmp/certs/ && \
     curl https://packages.fluentbit.io/fluentbit.key | gpg --dearmor | tee /usr/share/keyrings/fluentbit-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/fluentbit-keyring.gpg] https://packages.fluentbit.io/debian/$(lsb_release -cs) $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/fluent-bit.list && \
-    wget -q https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -P /tmp/ && \
+    wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -P /tmp/ && \
     dpkg -i /tmp/packages-microsoft-prod.deb && \
     rm /tmp/packages-microsoft-prod.deb && \
     apt-get -y update && \
