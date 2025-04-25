@@ -52,48 +52,48 @@ services:
             - ${POSTGRES_CONFIG_PATH:-./}plugins/:/usr/local/fieldsets/plugins/
             - ${POSTGRES_CONFIG_PATH:-./}data/:/usr/local/fieldsets/data/
             - ${POSTGRES_CONFIG_PATH:-./}src/:/usr/local/fieldsets/apps/
-            - postgres-data:/var/lib/postgresql/data
-            - postgres-logs:/var/lib/postgresql/logs
-            - postgres-archive:/var/lib/postgresql/archive
-            - postgres-pipeline:/var/lib/postgresql/pipeline
-            - postgres-fieldsets:/var/lib/postgresql/fieldsets
-            - postgres-filters:/var/lib/postgresql/filters
-            - postgres-records:/var/lib/postgresql/records
-            - postgres-documents:/var/lib/postgresql/documents
-            - postgres-lookups:/var/lib/postgresql/lookups
-            - postgres-streams:/var/lib/postgresql/streams
-            - postgres-sequences:/var/lib/postgresql/sequences
+            - db-data:/var/lib/postgresql/data
+            - db-logs:/var/lib/postgresql/logs
+            - db-archive:/var/lib/postgresql/archive
+            - db-pipeline:/var/lib/postgresql/pipeline
+            - db-fieldsets:/var/lib/postgresql/fieldsets
+            - db-filters:/var/lib/postgresql/filters
+            - db-records:/var/lib/postgresql/records
+            - db-documents:/var/lib/postgresql/documents
+            - db-lookups:/var/lib/postgresql/lookups
+            - db-streams:/var/lib/postgresql/streams
+            - db-sequences:/var/lib/postgresql/sequences
 volumes:
-    postgres-data:
+    db-data:
         driver: local
         name: fieldsets-db-data
-    postgres-logs:
+    db-logs:
         driver: local
         name: fieldsets-db-logs
-    postgres-archive:
+    db-archive:
         driver: local
         name: fieldsets-db-archive
-    postgres-pipeline:
+    db-pipeline:
         driver: local
         name: fieldsets-db-pipeline
-    postgres-fieldsets:
+    db-fieldsets:
         driver: local
         name: fieldsets-db-fieldsets
-    postgres-filters:
+    db-filters:
         driver: local
         name: fieldsets-db-filters
-    postgres-records:
+    db-records:
         driver: local
         name: fieldsets-db-records
-    postgres-documents:
+    db-documents:
         driver: local
         name: fieldsets-db-documents
-    postgres-lookups:
+    db-lookups:
         driver: local
         name: fieldsets-db-lookups
-    postgres-streams:
+    db-streams:
         driver: local
         name: fieldsets-db-streams
-    postgres-sequences:
+    db-sequences:
         driver: local
         name: fieldsets-db-sequences
