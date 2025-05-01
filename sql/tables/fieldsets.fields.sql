@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS fieldsets.fields (
     parent_token        VARCHAR(255) NOT NULL DEFAULT 'field',
     default_value 		FIELD_VALUE NULL,
     store               STORE_TYPE NULL DEFAULT 'filter'::STORE_TYPE,
-    meta  				JSONB NULL DEFAULT '{}'::JSONB
+    meta_data  				JSONB NULL DEFAULT '{}'::JSONB
 ) TABLESPACE fieldsets;

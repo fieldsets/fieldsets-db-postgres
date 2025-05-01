@@ -63,7 +63,7 @@ create_schemas() {
 # create_data_types: Create DB custom data types
 ##
 create_data_types() {
-    for f in /docker-entrypoint-initdb.d/sql/data_types/*.sql; do
+    for f in /usr/local/fieldsets/sql/data_types/*.sql; do
         psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -f "$f"
     done
 }

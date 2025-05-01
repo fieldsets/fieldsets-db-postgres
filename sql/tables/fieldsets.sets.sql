@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS fieldsets.sets (
     label      	    TEXT NULL,
     parent     	    BIGINT NOT NULL DEFAULT 1,
     parent_token    VARCHAR(255) NOT NULL DEFAULT 'fieldset',
-    meta  		    JSONB NULL DEFAULT '{}'::JSONB
+    meta_data  		    JSONB NULL DEFAULT '{}'::JSONB
 ) TABLESPACE fieldsets;

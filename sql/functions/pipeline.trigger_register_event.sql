@@ -1,5 +1,5 @@
 /**
- * trigger_register_event: triggered before insert into event table. When an insert happens that is tagged as an event, rewrite data for events table structure using metadata.
+ * trigger_register_event: triggered before insert into event table. When an insert happens that is tagged as an event, rewrite data for events table structure using meta_data.
  * @depends TRIGGER: register_event
  **/
 CREATE OR REPLACE FUNCTION pipeline.trigger_register_event() RETURNS trigger AS $function$
@@ -33,6 +33,6 @@ $function$ LANGUAGE plpgsql;
 
 COMMENT ON FUNCTION pipeline.trigger_register_event () IS
 '/**
- * trigger_register_event: triggered before insert into events table. When an insert happens that is tagged as an event, rewrite data for events table structure using metadata.
+ * trigger_register_event: triggered before insert into events table. When an insert happens that is tagged as an event, rewrite data for events table structure using meta_data.
  * @depends TRIGGER: register_event
  **/';

@@ -3,6 +3,6 @@
 set -eEa -o pipefail
 # Create our data tables and relational architecture.
 
-for f in /docker-entrypoint-initdb.d/sql/sequences/*.sql; do
+for f in /usr/local/fieldsets/sql/sequences/*.sql; do
 	psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -f "$f"
 done

@@ -24,9 +24,9 @@ AS $function$
             WHEN 'list' THEN
                 return_result := ROW(NULL,NULL,NULL,NULL,NULL,field_value::TEXT[],NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
             WHEN 'array' THEN
-                return_result := ROW(NULL,NULL,NULL,NULL,NULL,NULL,field_value::DECIMAL[],NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+                return_result := ROW(NULL,NULL,NULL,NULL,NULL,NULL,field_value::JSONB[],NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
             WHEN 'vector' THEN
-                return_result := ROW(NULL,NULL,NULL,NULL,NULL,NULL,NULL,field_value::JSONB[],NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+                return_result := ROW(NULL,NULL,NULL,NULL,NULL,NULL,NULL,field_value::DECIMAL[],NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
             WHEN 'bool' THEN
                 return_result := ROW(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,field_value::BOOLEAN,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
             WHEN 'date' THEN
@@ -57,5 +57,5 @@ COMMENT ON FUNCTION fieldsets.create_field_value(anyelement, TEXT) IS
  * create_field_value: Input a data value and the corresponding FIELD_TYPE and return the SQL representation of its FIELD_VALUE.
  * @param anyelement: field_value
  * @param TEXT: field_type
- * @return FIELD_VALUE: ROW(BIGINT,TEXT,BIGINT,DECIMAL,JSONB,TEXT[],DECIMAL[],JSONB[],BOOLEAN,DATE,TIMESTAMP,TSVECTOR,UUID,JSONB,TEXT,JSONB,JSONB)
+ * @return FIELD_VALUE: ROW(BIGINT,TEXT,BIGINT,DECIMAL,JSONB,TEXT[],JSONB[],DECIMAL[],BOOLEAN,DATE,TIMESTAMP,TSVECTOR,UUID,JSONB,TEXT,JSONB,JSONB)
  **/';

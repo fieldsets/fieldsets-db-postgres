@@ -1,4 +1,4 @@
-INSERT INTO fieldsets.fields (id, token, label, type, default_value, store, parent, parent_token, meta) VALUES
+INSERT INTO fieldsets.fields (id, token, label, type, default_value, store, parent, parent_token, meta_data) VALUES
     (0, 'none', 'Fieldless', 'none', NULL, 'none', 0, 'none', '{}'::JSONB),
     (1, 'field', 'Field', 'any', NULL, 'any', 1, 'field', '{}'::JSONB),
     (2, 'fieldset', 'FieldSet Field', 'fieldset', NULL, 'any', 1, 'field', '{}'::JSONB),

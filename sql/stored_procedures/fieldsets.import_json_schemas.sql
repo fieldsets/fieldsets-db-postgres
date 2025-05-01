@@ -15,8 +15,8 @@ DECLARE
 	insert_stmt TEXT := '';
 	insert_values TEXT := '';
 	insert_fieldset_values TEXT := '';
-	insert_fields_sql TEXT := 'INSERT INTO fieldsets.fields (id, token, label, type, default_value, store, parent, parent_token, meta) VALUES';
-	insert_sets_sql TEXT := 'INSERT INTO fieldsets.sets (id, token, label, parent, parent_token, meta) VALUES';
+	insert_fields_sql TEXT := 'INSERT INTO fieldsets.fields (id, token, label, type, default_value, store, parent, parent_token, meta_data) VALUES';
+	insert_sets_sql TEXT := 'INSERT INTO fieldsets.sets (id, token, label, parent, parent_token, meta_data) VALUES';
 	insert_fieldsets_sql TEXT := 'INSERT INTO fieldsets.fieldsets (id, token, label, parent, parent_token, set_id, set_token, field_id, field_token, type, store) VALUES';
 	field_values_sql TEXT;
 	set_values_sql TEXT;
@@ -69,7 +69,7 @@ BEGIN
 				value ->> 'token' AS token,
 				value ->> 'label' AS label,
 				COALESCE(value ->> 'parent', 'fieldset') AS parent,
-				COALESCE(value ->> 'metadata', '{}') AS metadata
+				COALESCE(value ->> 'meta_data', '{}') AS meta_data
 				FROM jsonb_array_elements(fieldsets_record.data)
 		LOOP
 			-- Lookup set ids
@@ -86,7 +86,7 @@ BEGIN
 			END IF;
 
 			-- Create Dynamic Set SQL
-			set_values_sql := format('(%s, %L, %L, %s, %L, %L::JSONB)', set_id, set_record.token, set_record.label, set_parent_id, set_record.parent, set_record.metadata);
+			set_values_sql := format('(%s, %L, %L, %s, %L, %L::JSONB)', set_id, set_record.token, set_record.label, set_parent_id, set_record.parent, set_record.meta_data);
 			insert_values := format(E'%s\n%s,', insert_values, set_values_sql);
 
 			-- Add fieldset ids to lookup table
@@ -163,7 +163,7 @@ BEGIN
 				default_field_value := fieldsets.create_field_value(json_record.field_default_value, json_record.field_type);
 			END IF;
 
-			field_values_sql := format('(%s, %L, %L, %L::FIELD_TYPE, %L::FIELD_VALUE, %L::STORE_TYPE, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type::TEXT, default_field_value::TEXT, json_record.field_store::TEXT, field_parent_id, field_parent_token, json_record.field_metadata::TEXT);
+			field_values_sql := format('(%s, %L, %L, %L::FIELD_TYPE, %L::FIELD_VALUE, %L::STORE_TYPE, %s, %L, %L::JSONB)', field_id, json_record.field_token, json_record.field_label, json_record.field_type::TEXT, default_field_value::TEXT, json_record.field_store::TEXT, field_parent_id, field_parent_token, json_record.field_meta_data::TEXT);
 			insert_values := format(E'%s\n%s,', insert_values, field_values_sql);
 			insert_stmt := format('%s %s', insert_fields_sql, insert_values);
 			insert_stmt := trim(TRAILING ',' FROM insert_stmt);

@@ -47,7 +47,7 @@ services:
             - ${POSTGRES_CONFIG_PATH:-./}postgresql.conf:/etc/postgresql/postgresql.conf
             - ${POSTGRES_CONFIG_PATH:-./}cron.conf:/etc/postgresql/conf.d/cron.conf
             - ${POSTGRES_CONFIG_PATH:-./}initdb/:/docker-entrypoint-initdb.d/
-            - ${POSTGRES_CONFIG_PATH:-./}initdb/sql/:/usr/local/fieldsets/sql/
+            - ${POSTGRES_CONFIG_PATH:-./}sql/:/usr/local/fieldsets/sql/
             - ${POSTGRES_CONFIG_PATH:-./}lib/:/usr/local/fieldsets/lib/
             - ${POSTGRES_CONFIG_PATH:-./}plugins/:/usr/local/fieldsets/plugins/
             - ${POSTGRES_CONFIG_PATH:-./}data/:/usr/local/fieldsets/data/

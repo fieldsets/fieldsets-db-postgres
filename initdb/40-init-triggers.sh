@@ -2,7 +2,7 @@
 
 set -eEa -o pipefail
 
-for f in /docker-entrypoint-initdb.d/sql/triggers/*.sql; do
+for f in /usr/local/fieldsets/sql/triggers/*.sql; do
     psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -f "$f"
 done
 

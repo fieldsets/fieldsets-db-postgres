@@ -7,7 +7,7 @@ RETURNS TABLE (
     set_token TEXT,
     set_label TEXT,
     set_parent TEXT,
-    set_metadata JSONB,
+    set_meta_data JSONB,
     field_token TEXT,
     field_label TEXT,
     field_type TEXT,
@@ -15,14 +15,14 @@ RETURNS TABLE (
     field_parent TEXT,
     field_default_value JSONB,
     field_values JSONB,
-    field_metadata JSONB
+    field_meta_data JSONB
 )
 AS $function$
     SELECT
         token AS set_token,
         label AS set_label,
         parent AS set_parent,
-        metadata AS set_metadata,
+        meta_data AS set_meta_data,
         field ->> 'token' AS field_token,
         field ->> 'label' AS field_label,
         field ->> 'type' AS field_type,
@@ -51,18 +51,18 @@ AS $function$
                 '[]'::JSONB
         END AS field_values,
         CASE
-            WHEN field ? 'metadata' THEN
-                field -> 'metadata'
+            WHEN field ? 'meta_data' THEN
+                field -> 'meta_data'
             ELSE
                 '{}'::JSONB
-        END AS field_metadata
+        END AS field_meta_data
     FROM (
         SELECT
             token,
             label,
             parent,
             jsonb_array_elements(fields) AS field,
-            metadata
+            meta_data
         FROM (
             SELECT
                 value ->> 'token' AS token,
@@ -75,11 +75,11 @@ AS $function$
                 END AS parent,
                 value -> 'fields' AS fields,
                 CASE
-                    WHEN value ? 'metadata' THEN
-                        value -> 'metadata'
+                    WHEN value ? 'meta_data' THEN
+                        value -> 'meta_data'
                     ELSE
                         '{}'::JSONB
-                END AS metadata
+                END AS meta_data
             FROM jsonb_array_elements(json_string::JSONB)
         ) fs_import_json
     ) fs_import_fields;
