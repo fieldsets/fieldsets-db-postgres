@@ -1,9 +1,9 @@
 /**
- * isnumeric: Check if a text field is numeric.
+ * is_numeric: Check if a text field is numeric.
  * @param TEXT: val
  * @returns BOOLEAN
  **/
-CREATE OR REPLACE FUNCTION public.isnumeric(val TEXT) RETURNS BOOLEAN 
+CREATE OR REPLACE FUNCTION public.is_numeric(val TEXT) RETURNS BOOLEAN
 AS $function$
 DECLARE x NUMERIC;
 BEGIN
@@ -16,9 +16,9 @@ $function$
 STRICT
 LANGUAGE plpgsql IMMUTABLE;
 
-COMMENT ON FUNCTION public.isnumeric (TEXT) IS 
+COMMENT ON FUNCTION public.is_numeric (TEXT) IS 
 '/**
- * isnumeric: Check if a text field is numeric.
+ * is_numeric: Check if a text field is numeric.
  * @param TEXT: val
  * @returns BOOLEAN
  **/';

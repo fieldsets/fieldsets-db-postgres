@@ -10,7 +10,7 @@ BEGIN
                 %I		DECIMAL,
                 %I		JSONB,
                 %I 		TEXT[],
-                %I		JSONB[],
+                %I		BIGINT[],
                 %I		DECIMAL[],
                 %I 		BOOLEAN,
                 %I 		DATE,

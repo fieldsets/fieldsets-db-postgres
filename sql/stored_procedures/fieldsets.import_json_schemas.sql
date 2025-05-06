@@ -158,7 +158,7 @@ BEGIN
 					END IF;
 			END CASE;
 
-			default_field_value := ROW(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+			default_field_value := ROW(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL::BOOLEAN,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 			IF json_record.field_default_value IS NOT NULL THEN
 				default_field_value := fieldsets.create_field_value(json_record.field_default_value, json_record.field_type);
 			END IF;
